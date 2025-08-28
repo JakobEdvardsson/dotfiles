@@ -5,8 +5,8 @@ fzf
 ripgrep
 fd
 fish
-
 git
 gh
 curl
 htop
+kitty

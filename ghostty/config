@@ -1,0 +1,5 @@
+shell-integration = fish
+font-family = JetBrains Mono
+mouse-hide-while-typing = true
+scrollback-limit = 1000000
+window-save-state = always
