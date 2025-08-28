@@ -4,6 +4,7 @@ lazygit
 fzf
 ripgrep
 fd
+fish
 
 git
 gh
