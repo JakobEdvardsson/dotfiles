@@ -1,0 +1,11 @@
+stow
+neovim
+lazygit
+fzf
+ripgrep
+fd
+
+git
+gh
+curl
+htop
