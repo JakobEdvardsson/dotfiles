@@ -2,3 +2,5 @@
 --ignore=.stowrc
 --ignore=.git
 --ignore=README.md
+--ignore=dnf-packages.txt
+--ignore=setup.sh
