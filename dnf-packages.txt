@@ -12,6 +12,6 @@ htop
 kitty
 tldr
 bat
-eza
+lsd
 trash-cli
 zoxide
