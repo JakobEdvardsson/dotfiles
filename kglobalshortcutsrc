@@ -67,7 +67,7 @@ Switch Window Left=Meta+Left,Meta+Alt+Left,Switch to Window to the Left
 Switch Window Right=Meta+Right,Meta+Alt+Right,Switch to Window to the Right
 Switch Window Up=Meta+Up,Meta+Alt+Up,Switch to Window Above
 Switch to Desktop 1=Ctrl+F1\tMeta+1,Ctrl+F1,Switch to Desktop 1
-Switch to Desktop 10=none,,Switch to Desktop 10
+Switch to Desktop 10=Meta+0,,Switch to Desktop 10
 Switch to Desktop 11=none,,Switch to Desktop 11
 Switch to Desktop 12=none,,Switch to Desktop 12
 Switch to Desktop 13=none,,Switch to Desktop 13
@@ -158,7 +158,7 @@ Window Shade=none,,Shade Window
 Window Shrink Horizontal=none,,Shrink Window Horizontally
 Window Shrink Vertical=none,,Shrink Window Vertically
 Window to Desktop 1=Meta+!,,Window to Desktop 1
-Window to Desktop 10=none,,Window to Desktop 10
+Window to Desktop 10=Meta+=,,Window to Desktop 10
 Window to Desktop 11=none,,Window to Desktop 11
 Window to Desktop 12=none,,Window to Desktop 12
 Window to Desktop 13=none,,Window to Desktop 13
