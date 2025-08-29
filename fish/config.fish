@@ -1,5 +1,8 @@
+zoxide init fish | source
+
 # Aliases
 alias cat 'bat --style plain --pager never'
+alias cd z
 alias cp 'cp -i'
 alias cpp 'cp -R'
 alias df 'df -h'
