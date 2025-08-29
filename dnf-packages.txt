@@ -10,3 +10,7 @@ gh
 curl
 htop
 kitty
+tldr
+bat
+eza
+trash-cli
