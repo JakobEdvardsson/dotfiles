@@ -2,7 +2,7 @@ set -gx EDITOR nvim
 set -gx ZELLIJ_AUTO_ATTACH true
 
 if status is-interactive
-    eval (zellij setup --generate-auto-start fish | string collect)
+    # eval (zellij setup --generate-auto-start fish | string collect)
 
     zoxide init fish | source
 

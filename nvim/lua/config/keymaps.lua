@@ -25,3 +25,48 @@ map("x", "s", require("substitute").visual, { noremap = true })
 
 -- Terminal Mappings
 map("t", "<C-\\>", "<cmd>close<cr>", { desc = "Hide Terminal" })
+
+-- Command to set diagnostic severity dynamically
+vim.api.nvim_create_user_command("DiagSeverity", function(opts)
+  local map = {
+    ERROR = { vim.diagnostic.severity.ERROR },
+    WARN = { vim.diagnostic.severity.WARN, vim.diagnostic.severity.ERROR },
+    INFO = { vim.diagnostic.severity.INFO, vim.diagnostic.severity.WARN, vim.diagnostic.severity.ERROR },
+    ALL = {
+      vim.diagnostic.severity.HINT,
+      vim.diagnostic.severity.INFO,
+      vim.diagnostic.severity.WARN,
+      vim.diagnostic.severity.ERROR,
+    },
+  }
+
+  local sevs = map[opts.args:upper()]
+  if not sevs then
+    print("Invalid severity. Options: ERROR, WARN, INFO, ALL")
+    return
+  end
+
+  vim.diagnostic.config({
+    virtual_text = { severity = { min = sevs[1] } },
+    signs = { severity = { min = sevs[1] } },
+    underline = { severity = { min = sevs[1] } },
+  })
+
+  print("Diagnostics set to show: " .. opts.args)
+end, {
+  nargs = 1,
+  complete = function()
+    return { "ERROR", "WARN", "INFO", "ALL" }
+  end,
+})
+-- Toggle between showing only errors and showing all diagnostics
+local error_only = false
+
+vim.keymap.set("n", "<leader>xe", function()
+  error_only = not error_only
+  if error_only then
+    vim.cmd("DiagSeverity ERROR")
+  else
+    vim.cmd("DiagSeverity ALL")
+  end
+end, { desc = "Toggle diagnostics error-only / all" })
