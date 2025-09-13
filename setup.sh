@@ -21,6 +21,13 @@ if ! command -v ghostty &>/dev/null; then
   sudo dnf install ghostty -y
 fi
 
+if ! command -v brave-browser &>/dev/null; then
+  print "brave-browser not found. Installing..."
+  sudo dnf install dnf-plugins-core
+  sudo dnf config-manager addrepo --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo -y
+  sudo dnf install brave-browser -y
+fi
+
 if ! command -v zellij &>/dev/null; then
   print "zellij not found. Installing..."
   sudo dnf copr enable varlad/zellij -y
