@@ -15,3 +15,5 @@ bat
 lsd
 trash-cli
 zoxide
+go
+cargo
