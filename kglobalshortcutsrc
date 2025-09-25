@@ -112,7 +112,7 @@ Walk Through Windows of Current Application=Alt+`,Meta+`\tAlt+`,Walk Through Win
 Walk Through Windows of Current Application (Reverse)=Alt+~,Meta+~\tAlt+~,Walk Through Windows of Current Application (Reverse)
 Walk Through Windows of Current Application Alternative=none,none,Walk Through Windows of Current Application Alternative
 Walk Through Windows of Current Application Alternative (Reverse)=none,none,Walk Through Windows of Current Application Alternative (Reverse)
-Window Above Other Windows=none,,Keep Window Above Others
+Window Above Other Windows=Meta+Shift+T,,Keep Window Above Others
 Window Below Other Windows=none,,Keep Window Below Others
 Window Close=Alt+F4\tMeta+Q,Alt+F4,Close Window
 Window Custom Quick Tile Bottom=none,,Custom Quick Tile Window to the Bottom
@@ -130,7 +130,7 @@ Window Minimize=Meta+PgDown,Meta+PgDown,Minimize Window
 Window Move=none,,Move Window
 Window Move Center=none,,Move Window to the Center
 Window No Border=none,,Toggle Window Titlebar and Frame
-Window On All Desktops=none,,Keep Window on All Desktops
+Window On All Desktops=Meta+Shift+P,,Keep Window on All Desktops
 Window One Desktop Down=Meta+Ctrl+Shift+Down,Meta+Ctrl+Shift+Down,Window One Desktop Down
 Window One Desktop Up=Meta+Ctrl+Shift+Up,Meta+Ctrl+Shift+Up,Window One Desktop Up
 Window One Desktop to the Left=Meta+Ctrl+Shift+Left,Meta+Ctrl+Shift+Left,Window One Desktop to the Left
@@ -254,11 +254,18 @@ switch to next activity=none,,Switch to Next Activity
 switch to previous activity=none,,Switch to Previous Activity
 toggle do not disturb=none,,Toggle do not disturb
 
+[services][brave-browser.desktop]
+WithDGPU=Meta+Shift+W
+_launch=Meta+W
+
 [services][com.mitchellh.ghostty.desktop]
 new-window=Meta+Return
 
+[services][org.kde.konsole.desktop]
+_launch=none
+
+[services][org.kde.plasma.emojier.desktop]
+_launch=Meta+Ctrl+Alt+Shift+Space\tMeta+Shift+E\tMeta+.
+
 [services][org.kde.touchpadshortcuts.desktop]
 ToggleTouchpad=Touchpad Toggle\tMeta+Ctrl+Zenkaku Hankaku
-
-[services][org.mozilla.firefox.desktop]
-new-window=Meta+W

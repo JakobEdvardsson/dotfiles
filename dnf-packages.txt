@@ -1,11 +1,12 @@
 stow
 neovim
+git
 lazygit
+git-delta
 fzf
 ripgrep
 fd
 fish
-git
 gh
 curl
 htop
