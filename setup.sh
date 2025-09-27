@@ -34,6 +34,11 @@ if ! command -v zellij &>/dev/null; then
   sudo dnf install zellij -y
 fi
 
+if ! command -v nix &>/dev/null; then
+  print "nix not found. Installing..."
+  curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+fi
+
 #install nerdfonts
 if ! fc-list | grep -qi "JetBrainsMono Nerd Font"; then
   print "JetBrainsMono Nerd Font not found. Installing..."
