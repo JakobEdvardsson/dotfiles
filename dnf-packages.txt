@@ -18,4 +18,3 @@ trash-cli
 zoxide
 go
 cargo
-gcc-c++

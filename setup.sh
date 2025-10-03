@@ -50,6 +50,11 @@ if ! fc-list | grep -qi "JetBrainsMono Nerd Font"; then
   fc-cache -fv
 fi
 
+if ! sudo dnf group list --installed | grep -qi "Development Tools"; then
+  print "Development Tools group not found. Installing..."
+  sudo dnf group install "Development Tools" -y
+fi
+
 # Install dnf packages
 print "Installing packages"
 sudo xargs dnf install -y <dnf-packages.txt
