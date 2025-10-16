@@ -4,3 +4,4 @@
 --ignore='^dnf-packages.txt'
 --ignore='^setup.sh'
 --ignore='^.stowrc'
+--ignore='^.gitconfig'

@@ -1,0 +1,13 @@
+[user]
+	name = JakobEdvardsson
+	email = jakob@edvardsson.tech
+[credential "https://github.com"]
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = !/usr/bin/gh auth git-credential
+[init]
+	defaultBranch = main
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/
+[pull]
+	rebase = true
