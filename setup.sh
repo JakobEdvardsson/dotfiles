@@ -34,6 +34,23 @@ if ! command -v zellij &>/dev/null; then
   sudo dnf install zellij -y
 fi
 
+if ! command -v docker &>/dev/null; then
+  print "docker not found. Installing..."
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sudo sh ./get-docker.sh
+  sudo rm get-docker.sh
+  sudo groupadd docker
+  sudo usermod -aG docker "$USER"
+  newgrp docker
+  sudo systemctl enable --now docker.service
+  sudo systemctl enable --now containerd.service
+fi
+
+if ! command -v devpod &>/dev/null; then
+  print "devpod not found. Installing..."
+  curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-amd64" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
+fi
+
 if ! command -v nix &>/dev/null; then
   print "nix not found. Installing..."
   curl -fsSL https://install.determinate.systems/nix | sh -s -- install
