@@ -55,6 +55,9 @@ if ! sudo dnf group list --installed | grep -qi "Development Tools"; then
   sudo dnf group install "Development Tools" -y
 fi
 
+#Extra "stows"
+ln -s "$(pwd)"/gitconfig ~/.gitconfig
+
 # Install dnf packages
 print "Installing packages"
 sudo xargs dnf install -y <dnf-packages.txt
