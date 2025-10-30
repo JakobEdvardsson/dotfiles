@@ -18,3 +18,10 @@ trash-cli
 zoxide
 go
 cargo
+gcc
+gcc-c++
+libstdc++-static
+python3
+python3-devel
+python3.10
+python3.10-devel
