@@ -1,6 +1,7 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR --export UV_PROJECT_ENVIRONMENT:tmp/custom-venv
+SETUVAR --export GTK_IM_MODULE:simple
+SETUVAR --export UV_PROJECT_ENVIRONMENT:tmp/custom\x2dvenv
 SETUVAR __fish_initialized:3800
 SETUVAR fish_color_cancel:\x2dr
 SETUVAR fish_color_cwd:green
