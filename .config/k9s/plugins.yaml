@@ -37,3 +37,34 @@ plugins:
       - service
       - statefulset
     shortCut: Ctrl-Y
+
+  jsonLogsc:
+    args:
+      - -c
+      - >
+        kubectl logs -f "pod/$POD" -c "$NAME" -n "$NAMESPACE" --context "$CONTEXT" |
+        jq -C -R 'try (fromjson | .) catch .' |
+        less -RK +F
+    background: false
+    command: sh
+    confirm: false
+    description: Logs (as JSON, pretty)
+    scopes:
+      - container
+    shortCut: Ctrl-J
+
+  yamlLogsc:
+    args:
+      - -c
+      - >
+        kubectl logs -f "pod/$POD" -c "$NAME" -n "$NAMESPACE" --context "$CONTEXT" |
+        jq -cR '. as $line | try (fromjson | .) catch $line' |
+        yq --input-format=json --colors "${1:-.}" - |
+        less -RK +F
+    background: false
+    command: sh
+    confirm: false
+    description: Logs (as YAML)
+    scopes:
+      - container
+    shortCut: Ctrl-Y
