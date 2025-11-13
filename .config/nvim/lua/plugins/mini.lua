@@ -18,8 +18,8 @@ return {
       go_in_vertical_plus = "<C-w>V",
       toggle_hidden = "g.",
       change_cwd = "gp",
-      go_in_plus = "<Right>",
-      go_out_plus = "<Left>",
+      go_in_plus = "<S-Right>",
+      go_out_plus = "<S-Left>",
     },
   },
   keys = {
