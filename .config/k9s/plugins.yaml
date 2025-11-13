@@ -1,0 +1,39 @@
+plugins:
+  jsonLogs:
+    args:
+      - -c
+      - >
+        kubectl logs -f --context="$CONTEXT" --namespace="$NAMESPACE" "$RESOURCE_NAME/$NAME" |
+        jq -C -R 'try (fromjson | .) catch .' |
+        less -RK +F
+    background: false
+    command: sh
+    confirm: false
+    description: Logs (as JSON, pretty)
+    scopes:
+      - daemonset
+      - deploy
+      - job
+      - pod
+      - replicaset
+      - service
+      - statefulset
+    shortCut: Ctrl-J
+
+  yamlLogs:
+    args:
+      - -c
+      - kubectl logs -f --context="$CONTEXT" --namespace="$NAMESPACE" "$RESOURCE_NAME/$NAME" | jq -cR ". as \$line | try (fromjson | .) catch \$line" | yq --input-format="json" --colors "${1:-.}" - | less -RK +F
+    background: false
+    command: sh
+    confirm: false
+    description: Logs (as YAML)
+    scopes:
+      - daemonset
+      - deploy
+      - job
+      - pod
+      - replicaset
+      - service
+      - statefulset
+    shortCut: Ctrl-Y
