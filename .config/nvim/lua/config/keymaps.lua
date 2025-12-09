@@ -90,6 +90,6 @@ vim.keymap.set("n", "<leader>xe", function()
   if error_only then
     vim.cmd("DiagSeverity ERROR")
   else
-    vim.cmd("DiagSeverity ALL")
+    vim.cmd("DiagSeverity INFO")
   end
 end, { desc = "Toggle diagnostics error-only / all" })

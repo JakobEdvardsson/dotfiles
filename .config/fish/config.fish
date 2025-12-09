@@ -81,3 +81,10 @@ if status is-interactive
     set -g fish_pager_color_selected_background --background=$selection
 
 end
+
+# pnpm
+set -gx PNPM_HOME "/home/jakobe/.local/share/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end

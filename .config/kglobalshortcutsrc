@@ -209,6 +209,11 @@ stopmedia=Media Stop,Media Stop,Stop media playback
 
 [org.chromium.Chromium]
 4C60DB0D3BF53B7FF32E4D4DA6750C97-Ctrl+Shift+Space=none,none,Electron shortcut Ctrl+Shift+Space
+CA2E44D1E7D05B71C7839B26F25AFC69-autofill_card=none,none,Autofill the last used card for the current website
+CA2E44D1E7D05B71C7839B26F25AFC69-autofill_identity=none,none,Autofill the last used identity for the current website
+CA2E44D1E7D05B71C7839B26F25AFC69-autofill_login=none,none,Autofill the last used login for the current website
+CA2E44D1E7D05B71C7839B26F25AFC69-generate_password=none,none,Generate and copy a new random password to the clipboard
+CA2E44D1E7D05B71C7839B26F25AFC69-lock_vault=none,none,Lock the vault
 _k_friendly_name=org.chromium.Chromium
 
 [org_kde_powerdevil]

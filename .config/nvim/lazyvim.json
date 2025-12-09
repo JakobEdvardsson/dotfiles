@@ -1,7 +1,7 @@
 {
   "extras": [
-    "lazyvim.plugins.extras.ai.avante",
     "lazyvim.plugins.extras.ai.copilot",
+    "lazyvim.plugins.extras.ai.sidekick",
     "lazyvim.plugins.extras.coding.yanky",
     "lazyvim.plugins.extras.editor.dial",
     "lazyvim.plugins.extras.editor.inc-rename",
@@ -15,6 +15,7 @@
     "lazyvim.plugins.extras.lang.nix",
     "lazyvim.plugins.extras.lang.python",
     "lazyvim.plugins.extras.lang.tailwind",
+    "lazyvim.plugins.extras.lang.toml",
     "lazyvim.plugins.extras.lang.typescript",
     "lazyvim.plugins.extras.lang.yaml",
     "lazyvim.plugins.extras.linting.eslint",

@@ -1,0 +1,32 @@
+return {
+  -- {
+  --   "neovim/nvim-lspconfig",
+  --   opts = {
+  --     servers = {
+  --       vtsls = {
+  --         settings = {
+  --           typescript = {
+  --             preferences = {
+  --               includeCompletionsForModuleExports = true,
+  --               includeCompletionsForImportStatements = true,
+  --               importModuleSpecifier = "non-relative",
+  --             },
+  --             tsserver = {
+  --               maxTsServerMemory = 8192,
+  --               -- useSeparateSyntaxServer = false,
+  --               -- useSyntaxServer = "never"
+  --             },
+  --           },
+  --         },
+  --         experimental = {
+  --           maxInlayHintLength = 30,
+  --           completion = {
+  --             entriesLimit = 15,
+  --             enableServerSideFuzzyMatch = true,
+  --           },
+  --         },
+  --       },
+  --     },
+  --   },
+  -- },
+}

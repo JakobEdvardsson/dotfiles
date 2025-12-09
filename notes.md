@@ -9,3 +9,5 @@ DefaultLimitNOFILE=65536
 ```
 
 `/etc/systemd/system.conf` and `/etc/systemd/user.conf`
+
+https://support.scc.suse.com/s/kb/360054835111?language=en_US

@@ -1,27 +1,27 @@
 return {
-  -- {
-  --   "neovim/nvim-lspconfig",
-  --   opts = function(_, opts)
-  --     opts.servers.basedpyright = {
-  --       settings = {
-  --         basedpyright = {
-  --           analysis = {
-  --             autoSearchPaths = true,
-  --             useLibraryCodeForTypes = true,
-  --             typeCheckingMode = "strict",
-  --           },
-  --           disableOrganizeImports = true,
-  --         },
-  --       },
-  --     }
-  --   end,
-  -- },
-  -- {
-  --   "stevearc/conform.nvim",
-  --   opts = {
-  --     formatters_by_ft = {
-  --       python = { "ruff_fix", "ruff_format" },
-  --     },
-  --   },
-  -- },
+  {
+    "neovim/nvim-lspconfig",
+    opts = function(_, opts)
+      opts.servers.basedpyright = {
+        settings = {
+          basedpyright = {
+            -- analysis = {
+            --   autoSearchPaths = true,
+            --   useLibraryCodeForTypes = true,
+            --   typeCheckingMode = "strict",
+            -- },
+            disableOrganizeImports = true,
+          },
+        },
+      }
+    end,
+  },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        python = { "ruff_fix", "ruff_format" },
+      },
+    },
+  },
 }
