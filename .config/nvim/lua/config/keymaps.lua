@@ -22,6 +22,11 @@ map("n", "<C-S-Right>", ":vertical resize +2<CR>", { noremap = true, silent = tr
 map("n", "<S-Left>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
 map("n", "<S-Right>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 
+map("n", "<A-.>", "<cmd>BufferLineMoveNext<CR>", { silent = true })
+map("n", "<A-,>", "<cmd>BufferLineMovePrev<CR>", { silent = true })
+map("n", "<S-Left>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev Buffer" })
+map("n", "<S-Right>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next Buffer" })
+
 -- substitute
 map("n", "s", require("substitute").operator, { noremap = true })
 map("n", "ss", require("substitute").line, { noremap = true })
