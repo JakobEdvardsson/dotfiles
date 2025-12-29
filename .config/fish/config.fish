@@ -1,10 +1,12 @@
 set -gx EDITOR nvim
 set -gx ZELLIJ_AUTO_ATTACH true
+set -gx PATH /home/jakobe/.local/bin $PATH
 
 if status is-interactive
     # eval (zellij setup --generate-auto-start fish | string collect)
 
     zoxide init fish | source
+    direnv hook fish | source
 
     # Aliases
     alias cat 'bat --style plain --pager never'
@@ -85,6 +87,6 @@ end
 # pnpm
 set -gx PNPM_HOME "/home/jakobe/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
-  set -gx PATH "$PNPM_HOME" $PATH
+    set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end

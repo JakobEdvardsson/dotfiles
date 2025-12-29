@@ -1,0 +1,6 @@
+git:
+  mainBranches:
+    - master
+    - main
+    - trunk
+  ignoreWhitespaceInDiffView: true
