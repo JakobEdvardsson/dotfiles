@@ -12,7 +12,7 @@ function kubeconnect-all
     echo "============================"
 
     # --- GCP ---
-    set project (gcloud projects list --filter="name~'^ne-$env'" --format="value(projectId)" | head -n1)
+    set project (gcloud projects list --filter="name~'^ne-$env-'" --format="value(projectId)" | head -n1)
 
     if test -z "$project"
         echo "❌ No GCP project found for '$env'"
@@ -37,17 +37,16 @@ function kubeconnect-all
     echo "        🟦 Azure (AKS)"
     echo "============================"
 
-    echo "🔍 Fetching AKS clusters starting with '$env-'..."
+    echo "🔍 Fetching AKS clusters starting with '$env'..."
 
-    # Filter Azure clusters containing "<env>-"
-    set prefix "$env-"
+    # Filter Azure clusters containing "<env>"
 
     set aks_list (az aks list \
-    --query "[?contains(name, '$prefix')].[name, resourceGroup]" \
+    --query "[?contains(name, '$env-')].[name, resourceGroup]" \
     --output tsv)
 
     if test -z "$aks_list"
-        echo "⚠️  No AKS clusters found starting with '$env-'"
+        echo "⚠️  No AKS clusters found starting with '$env'"
     else
         # aks_list is TSV with 2 columns: <name> <resourceGroup>
         for line in $aks_list
@@ -55,11 +54,11 @@ function kubeconnect-all
             set rg (echo $line | awk '{print $2}')
 
             # Extra safety: ensure actual prefix match, not just substring
-            if string match -q "$prefix*" $name
+            if string match -q "$env-*" $name
                 echo "➡️  Connecting to AKS cluster $name (RG: $rg)"
                 az aks get-credentials --resource-group $rg --name $name --overwrite-existing
             else
-                echo "⏭️  Skipping $name (matched substring but does not start with '$prefix')"
+                echo "⏭️  Skipping $name (matched substring but does not start with '$env')"
             end
         end
     end

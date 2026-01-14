@@ -10,7 +10,7 @@ function kubeconnect
     set cluster $argv[2]
 
     # Find project dynamically based on env prefix
-    set project (gcloud projects list --filter="name~'^ne-$env'" --format="value(projectId)" | head -n1)
+    set project (gcloud projects list --filter="name~'^ne-$env-'" --format="value(projectId)" | head -n1)
 
     if test -z "$project"
         echo "❌ No project found for environment '$env'"
