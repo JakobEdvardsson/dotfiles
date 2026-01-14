@@ -4,3 +4,5 @@ git:
     - main
     - trunk
   ignoreWhitespaceInDiffView: true
+  pagers:
+    - pager: delta --dark --paging=never
