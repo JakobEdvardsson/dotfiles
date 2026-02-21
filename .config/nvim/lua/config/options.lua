@@ -7,6 +7,11 @@
 vim.g.lazyvim_python_lsp = "basedpyright"
 vim.g.root_spec = { "cwd" }
 
+-- Disable eslint auto-format in UPX (type-aware eslint rules are heavy on save)
+if vim.fn.getcwd() == "/home/jakobe/code/upx" then
+  vim.g.lazyvim_eslint_auto_format = false
+end
+
 vim.opt.wrap = true
 vim.opt.linebreak = true
 vim.opt.scrolloff = 15
