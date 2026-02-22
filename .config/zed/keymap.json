@@ -1,0 +1,44 @@
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-j": "terminal_panel::ToggleFocus",
+      "alt-shift-j": "terminal_panel::Toggle",
+      "ctrl-enter": "terminal_panel::ToggleFocus",
+      "alt-enter": "terminal_panel::Toggle"
+    }
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-enter": "terminal_panel::ToggleFocus",
+      "alt-enter": "terminal_panel::Toggle"
+    }
+  },
+  {
+    "context": "vim_mode == normal",
+    "bindings": {
+      "] d": "editor::GoToDiagnostic",
+      "[ d": "editor::GoToPreviousDiagnostic",
+      "] t": "pane::ActivateNextItem",
+      "[ t": "pane::ActivatePreviousItem",
+      "space g g": [
+        "task::Spawn",
+        {
+          "task_name": "start lazygit",
+          "reveal_target": "center"
+        }
+      ],
+      "space g f": [
+        "task::Spawn",
+        {
+          "task_name": "start lazygit file log",
+          "reveal_target": "center"
+        }
+      ],
+      "s": "vim::PushReplaceWithRegister",
+      "ctrl-enter": "terminal_panel::ToggleFocus",
+      "alt-enter": "terminal_panel::Toggle"
+    }
+  }
+]

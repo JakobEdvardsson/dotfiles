@@ -6,3 +6,8 @@ git:
   ignoreWhitespaceInDiffView: true
   pagers:
     - pager: delta --dark --paging=never
+
+quitOnTopLevelReturn: true
+os:
+  edit: "zed {{filename}}"
+  editAtLine: "zed {{filename}}:{{line}}"
