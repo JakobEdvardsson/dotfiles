@@ -2,17 +2,17 @@
   {
     "context": "Workspace",
     "bindings": {
-      "alt-j": "terminal_panel::ToggleFocus",
-      "alt-shift-j": "terminal_panel::Toggle",
-      "ctrl-enter": "terminal_panel::ToggleFocus",
-      "alt-enter": "terminal_panel::Toggle"
+      "alt-j": "workspace::NewCenterTerminal",
+      "alt-shift-j": "workspace::NewCenterTerminal",
+      "ctrl-enter": "workspace::NewCenterTerminal",
+      "alt-enter": "workspace::NewCenterTerminal"
     }
   },
   {
     "context": "Terminal",
     "bindings": {
-      "ctrl-enter": "terminal_panel::ToggleFocus",
-      "alt-enter": "terminal_panel::Toggle"
+      "ctrl-enter": null,
+      "alt-enter": null
     }
   },
   {
@@ -24,6 +24,16 @@
       "alt-h": "pane::ActivatePreviousItem",
       "alt->": "pane::ActivateNextItem",
       "alt-<": "pane::ActivatePreviousItem",
+      "space w v": "pane::SplitRight",
+      "space w h": "workspace::ActivatePaneLeft",
+      "space w left": "workspace::ActivatePaneLeft",
+      "space w l": "workspace::ActivatePaneRight",
+      "space w right": "workspace::ActivatePaneRight",
+      "space w k": "workspace::ActivatePaneUp",
+      "space w up": "workspace::ActivatePaneUp",
+      "space w j": "workspace::ActivatePaneDown",
+      "space w down": "workspace::ActivatePaneDown",
+      "space w z": "workspace::ToggleZoom",
       "-": [
         "task::Spawn",
         {
@@ -46,8 +56,8 @@
         }
       ],
       "s": "vim::PushReplaceWithRegister",
-      "ctrl-enter": "terminal_panel::ToggleFocus",
-      "alt-enter": "terminal_panel::Toggle"
+      "ctrl-enter": "workspace::NewCenterTerminal",
+      "alt-enter": "workspace::NewCenterTerminal"
     }
   }
 ]
