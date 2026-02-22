@@ -20,8 +20,17 @@
     "bindings": {
       "] d": "editor::GoToDiagnostic",
       "[ d": "editor::GoToPreviousDiagnostic",
-      "] t": "pane::ActivateNextItem",
-      "[ t": "pane::ActivatePreviousItem",
+      "alt-l": "pane::ActivateNextItem",
+      "alt-h": "pane::ActivatePreviousItem",
+      "alt->": "pane::ActivateNextItem",
+      "alt-<": "pane::ActivatePreviousItem",
+      "-": [
+        "task::Spawn",
+        {
+          "task_name": "Yazi",
+          "reveal_target": "center"
+        }
+      ],
       "space g g": [
         "task::Spawn",
         {
