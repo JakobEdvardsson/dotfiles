@@ -1,7 +1,7 @@
 [
   {
     "label": "start lazygit",
-    "command": "lazygit -p $ZED_WORKTREE_ROOT",
+    "command": "lazygit",
     "hide": "on_success",
     "shell": {
       "program": "sh"
@@ -18,8 +18,8 @@
   },
   {
     "label": "Yazi",
-    "command": "yazi_zed $ZED_FILE",
-    "hide": "always",
+    "command": "fish -lc 'set -l start \"$ZED_FILE\"; if test -z \"$start\"; set start \"$ZED_WORKTREE_ROOT\"; end; if test -z \"$start\"; set start \"$PWD\"; end; set -l tmp (mktemp -t \"yazi-chooser.XXXXX\"); yazi \"$start\" --chooser-file=\"$tmp\"; set -l opened_file (string trim (head -n 1 \"$tmp\" 2>/dev/null)); rm -f -- \"$tmp\"; if test -n \"$opened_file\"; zed -- \"$opened_file\"; end'",
+    "hide": "on_success",
     "use_new_terminal": true,
     "allow_concurrent_runs": false
   }
