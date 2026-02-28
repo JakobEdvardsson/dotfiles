@@ -1,21 +1,22 @@
 return {
-  -- {
-  --   "neovim/nvim-lspconfig",
-  --   opts = {
-  --     servers = {
-  --       vtsls = {
-  --         settings = {
-  --           typescript = {
-  --             preferences = {
-  --               includeCompletionsForModuleExports = true,
-  --               includeCompletionsForImportStatements = true,
-  --               importModuleSpecifier = "non-relative",
-  --             },
-  --             tsserver = {
-  --               maxTsServerMemory = 8192,
-  --               -- useSeparateSyntaxServer = false,
-  --               -- useSyntaxServer = "never"
-  --             },
+  -- "neovim/nvim-lspconfig",
+  -- opts = {
+  --   servers = {
+  --     vtsls = {
+  --       settings = {
+  --         typescript = {
+  --           preferences = {
+  --             includeCompletionsForModuleExports = true,
+  --             includeCompletionsForImportStatements = true,
+  --             importModuleSpecifier = "non-relative",
+  --           },
+  --           tsserver = {
+  --             maxTsServerMemory = 16184,
+  --           },
+  --         },
+  --         javascript = {
+  --           tsserver = {
+  --             maxTsServerMemory = 16184,
   --           },
   --         },
   --         experimental = {
