@@ -2,7 +2,8 @@
   {
     "context": "Workspace",
     "bindings": {
-      "ctrl-enter": "workspace::NewCenterTerminal",
+      "ctrl-q": "workspace::CloseWindow",
+      "ctrl-k enter": "workspace::NewCenterTerminal",
       "alt-l": "pane::ActivateNextItem",
       "alt-h": "pane::ActivatePreviousItem",
       "alt-right": "pane::ActivateNextItem",
@@ -53,8 +54,7 @@
         }
       ],
       "space c r": "editor::Rename",
-      "s": "vim::PushReplaceWithRegister",
-      "ctrl-enter": "workspace::NewCenterTerminal"
+      "s": "vim::PushReplaceWithRegister"
     }
   }
 ]

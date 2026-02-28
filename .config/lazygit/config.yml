@@ -8,6 +8,7 @@ git:
     - pager: delta --dark --paging=never
 
 quitOnTopLevelReturn: true
+promptToReturnFromSubprocess: false
 os:
   edit: "zed {{filename}}"
   editAtLine: "zed {{filename}}:{{line}}"
