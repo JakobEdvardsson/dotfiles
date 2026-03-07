@@ -5,10 +5,10 @@ git:
     - trunk
   ignoreWhitespaceInDiffView: true
   pagers:
-    - pager: delta --dark --paging=never
+    - pager: delta --light --paging=never
 
-quitOnTopLevelReturn: true
+# quitOnTopLevelReturn: true
 promptToReturnFromSubprocess: false
-os:
-  edit: "zed {{filename}}"
-  editAtLine: "zed {{filename}}:{{line}}"
+# os:
+#   edit: "zed {{filename}}"
+#   editAtLine: "zed {{filename}}:{{line}}"

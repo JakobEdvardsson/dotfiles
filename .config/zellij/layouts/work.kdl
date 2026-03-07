@@ -1,17 +1,41 @@
 layout {
     cwd "/home/jakobe/code"
-    tab name="cons" focus=true hide_floating_panes=true {
+    tab name="cloud" hide_floating_panes=true {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
-        pane command="nvim" cwd="neo4j-cloud/components/console-api" focus=true {
+        pane command="nvim" cwd="neo4j-cloud" {
             start_suspended false
         }
         pane size=1 borderless=true {
             plugin location="zellij:status-bar"
         }
     }
-    tab name="upx" hide_floating_panes=true {
+    tab name="devpod" focus=true hide_floating_panes=true {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        pane command="devpod" cwd="neo4j-cloud" {
+            args "ssh" "neo4j-cloud"
+            start_suspended false
+        }
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab name="codex" hide_floating_panes=true {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        pane command="codex" cwd="/home/jakobe/code/neo4j-cloud" {
+            args "--add-dir" "/home/jakobe/code/upx"
+            start_suspended true
+        }
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab name="UPX" hide_floating_panes=true {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
@@ -22,28 +46,13 @@ layout {
             plugin location="zellij:status-bar"
         }
     }
-    tab name="term" hide_floating_panes=true {
+    tab name="pnpm" hide_floating_panes=true {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
-        pane cwd="/home/jakobe/code/neo4j-cloud" contents_file="initial_contents_1"
-        pane size=1 borderless=true {
-            plugin location="zellij:status-bar"
-        }
-    }
-    tab name="run" hide_floating_panes=true {
-        pane size=1 borderless=true {
-            plugin location="zellij:tab-bar"
-        }
-        pane split_direction="vertical" {
-            pane command="/usr/local/bin/devpod" cwd="neo4j-cloud" size="50%" {
-                args "ssh"
-                start_suspended false
-            }
-            pane command="/usr/bin/node" cwd="upx" size="50%" {
-                args "/usr/bin/pnpm" "--dir" "apps/upx" "dev"
-                start_suspended true
-            }
+        pane command="bash" cwd="/home/jakobe/code/upx" {
+            args "-lc" "AURA_DEV_ENVIRONMENT=devjakob pnpm --dir apps/upx dev"
+            start_suspended true
         }
         pane size=1 borderless=true {
             plugin location="zellij:status-bar"
@@ -53,7 +62,7 @@ layout {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
-        pane cwd="/home/jakobe/code/neo4j-cloud"
+        pane cwd="/home/jakobe/code"
         pane size=1 borderless=true {
             plugin location="zellij:status-bar"
         }
@@ -210,61 +219,61 @@ layout {
     }
     swap_floating_layout name="enlarged" {
         floating_panes max_panes=10 {
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "90%"
                 width "90%"
                 x "5%"
                 y 1
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "90%"
                 width "90%"
                 x "5%"
                 y 2
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "90%"
                 width "90%"
                 x "5%"
                 y 3
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "90%"
                 width "90%"
                 x "5%"
                 y 4
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "90%"
                 width "90%"
                 x "5%"
                 y 5
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "90%"
                 width "90%"
                 x "5%"
                 y 6
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "90%"
                 width "90%"
                 x "5%"
                 y 7
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "90%"
                 width "90%"
                 x "5%"
                 y 8
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "90%"
                 width "90%"
                 x "5%"
                 y 9
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "90%"
                 width "90%"
                 x 10
@@ -274,60 +283,60 @@ layout {
     }
     swap_floating_layout name="spread" {
         floating_panes max_panes=1 {
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 x "50%"
                 y "50%"
             }
         }
         floating_panes max_panes=2 {
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 width "45%"
                 x "1%"
                 y "25%"
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 width "45%"
                 x "50%"
                 y "25%"
             }
         }
         floating_panes max_panes=3 {
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "45%"
                 width "45%"
                 y "55%"
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 width "45%"
                 x "1%"
                 y "1%"
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 width "45%"
                 x "50%"
                 y "1%"
             }
         }
         floating_panes max_panes=4 {
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "45%"
                 width "45%"
                 x "1%"
                 y "55%"
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "45%"
                 width "45%"
                 x "50%"
                 y "55%"
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "45%"
                 width "45%"
                 x "1%"
                 y "1%"
             }
-            pane cwd="/home/jakobe/code/neo4j-cloud" {
+            pane cwd="/home/jakobe/code" {
                 height "45%"
                 width "45%"
                 x "50%"
@@ -336,3 +345,4 @@ layout {
         }
     }
 }
+

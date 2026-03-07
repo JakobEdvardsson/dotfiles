@@ -3,6 +3,6 @@ font-family = JetBrains Mono
 mouse-hide-while-typing = true
 scrollback-limit = 1000000
 window-save-state = always
-theme = TokyoNight Moon
+theme = light:Builtin Light, dark:Builtin Dark
 mouse-scroll-multiplier = 1.0
 bell-audio-volume = 0

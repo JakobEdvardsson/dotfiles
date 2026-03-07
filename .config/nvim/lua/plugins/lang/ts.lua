@@ -1,33 +1,39 @@
 return {
-  -- "neovim/nvim-lspconfig",
-  -- opts = {
-  --   servers = {
-  --     vtsls = {
-  --       settings = {
-  --         typescript = {
-  --           preferences = {
-  --             includeCompletionsForModuleExports = true,
-  --             includeCompletionsForImportStatements = true,
-  --             importModuleSpecifier = "non-relative",
-  --           },
-  --           tsserver = {
-  --             maxTsServerMemory = 16184,
-  --           },
-  --         },
-  --         javascript = {
-  --           tsserver = {
-  --             maxTsServerMemory = 16184,
-  --           },
-  --         },
-  --         experimental = {
-  --           maxInlayHintLength = 30,
-  --           completion = {
-  --             entriesLimit = 15,
-  --             enableServerSideFuzzyMatch = true,
-  --           },
-  --         },
-  --       },
-  --     },
-  --   },
-  -- },
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        vtsls = {
+          settings = {
+            vtsls = {
+              tsserver = {
+                -- Avoid tsserver GC stalls in large TypeScript workspaces.
+                maxTsServerMemory = 8192,
+              },
+              experimental = {
+                completion = {
+                  -- Keep completion payloads smaller and cheaper to rank/render.
+                  entriesLimit = 25,
+                  enableServerSideFuzzyMatch = false,
+                },
+              },
+            },
+            typescript = {
+              suggest = {
+                -- Skip broad symbol harvesting from imports/module exports.
+                includeCompletionsForModuleExports = false,
+                includeCompletionsForImportStatements = false,
+              },
+            },
+            javascript = {
+              suggest = {
+                includeCompletionsForModuleExports = false,
+                includeCompletionsForImportStatements = false,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 }
