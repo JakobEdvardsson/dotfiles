@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ZELLIJ_BIN="/usr/bin/zellij"
+if [[ ! -x "$ZELLIJ_BIN" ]]; then
+  ZELLIJ_BIN="$(command -v zellij)"
+fi
+
+for arg in "$@"; do
+  if [[ "$arg" == "--config" || "$arg" == "-c" ]]; then
+    exec "$ZELLIJ_BIN" "$@"
+  fi
+done
+
+mode="light"
+if [[ -x "$HOME/.config/theme-sync/bin/kde-theme-mode" ]]; then
+  mode="$($HOME/.config/theme-sync/bin/kde-theme-mode)"
+fi
+
+if [[ "$mode" == "dark" ]]; then
+  ztheme="ayu_dark"
+else
+  ztheme="catppuccin-latte"
+fi
+
+base_config="$HOME/.config/zellij/config.kdl"
+generated_config="$HOME/.config/zellij/.cache/config.auto-theme.kdl"
+mkdir -p "$(dirname "$generated_config")"
+
+if [[ -f "$base_config" ]]; then
+  awk -v new_theme="$ztheme" '
+    BEGIN { changed = 0 }
+    {
+      if (!changed && $1 == "theme") {
+        print "theme \"" new_theme "\""
+        changed = 1
+        next
+      }
+      print
+    }
+    END {
+      if (!changed) {
+        print "theme \"" new_theme "\""
+      }
+    }
+  ' "$base_config" > "$generated_config"
+  exec "$ZELLIJ_BIN" --config "$generated_config" "$@"
+fi
+
+exec "$ZELLIJ_BIN" "$@"

@@ -2,7 +2,31 @@ set -gx EDITOR nvim
 set -gx ZELLIJ_AUTO_ATTACH true
 set -gx PATH /home/jakobe/.local/bin $PATH
 
+function __kde_theme_refresh --description "Sync terminal theme vars from KDE"
+    set -l helper "$HOME/.config/theme-sync/bin/kde-theme-mode"
+    if test -x "$helper"
+        set -l mode (string trim -- ($helper 2>/dev/null))
+        if test "$mode" = "$__kde_theme_last_mode"
+            return
+        end
+        if test "$mode" = dark
+            set -gx TERMINAL_THEME_MODE dark
+            set -gx BAT_THEME OneHalfDark
+        else
+            set -gx TERMINAL_THEME_MODE light
+            set -gx BAT_THEME OneHalfLight
+        end
+        set -g __kde_theme_last_mode $mode
+    end
+end
+
+function __kde_theme_refresh_prompt --on-event fish_prompt
+    __kde_theme_refresh
+end
+
 if status is-interactive
+    __kde_theme_refresh
+
     # eval (zellij setup --generate-auto-start fish | string collect)
 
     zoxide init fish | source
@@ -45,43 +69,6 @@ if status is-interactive
     alias tempty trash-empty
     alias tl trash-list
     alias tp trash-put
-
-    # # TokyoNight Color Palette
-    # set -l foreground c8d3f5
-    # set -l selection 2d3f76
-    # set -l comment 636da6
-    # set -l red ff757f
-    # set -l orange ff966c
-    # set -l yellow ffc777
-    # set -l green c3e88d
-    # set -l purple fca7ea
-    # set -l cyan 86e1fc
-    # set -l pink c099ff
-    #
-    # # Syntax Highlighting Colors
-    # set -g fish_color_normal $foreground
-    # set -g fish_color_command $cyan
-    # set -g fish_color_keyword $pink
-    # set -g fish_color_quote $yellow
-    # set -g fish_color_redirection $foreground
-    # set -g fish_color_end $orange
-    # set -g fish_color_option $pink
-    # set -g fish_color_error $red
-    # set -g fish_color_param $purple
-    # set -g fish_color_comment $comment
-    # set -g fish_color_selection --background=$selection
-    # set -g fish_color_search_match --background=$selection
-    # set -g fish_color_operator $green
-    # set -g fish_color_escape $pink
-    # set -g fish_color_autosuggestion $comment
-    #
-    # # Completion Pager Colors
-    # set -g fish_pager_color_progress $comment
-    # set -g fish_pager_color_prefix $cyan
-    # set -g fish_pager_color_completion $foreground
-    # set -g fish_pager_color_description $comment
-    # set -g fish_pager_color_selected_background --background=$selection
-
 end
 
 # pnpm

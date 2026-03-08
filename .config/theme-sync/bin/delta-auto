@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+mode="light"
+if [[ -x "$HOME/.config/theme-sync/bin/kde-theme-mode" ]]; then
+  mode="$($HOME/.config/theme-sync/bin/kde-theme-mode)"
+fi
+
+if [[ "$mode" == "dark" ]]; then
+  exec delta --paging=never "$@"
+else
+  exec delta --light --paging=never "$@"
+fi
