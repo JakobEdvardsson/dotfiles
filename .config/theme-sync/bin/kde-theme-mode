@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+scheme=""
+
+if command -v kreadconfig6 >/dev/null 2>&1; then
+  scheme="$(kreadconfig6 --file kdeglobals --group General --key ColorScheme 2>/dev/null || true)"
+fi
+
+if [[ -z "$scheme" && -f "$HOME/.config/kdeglobals" ]]; then
+  scheme="$(awk -F= '/^ColorScheme=/{print $2; exit}' "$HOME/.config/kdeglobals")"
+fi
+
+if [[ -z "$scheme" ]] && command -v kreadconfig6 >/dev/null 2>&1; then
+  scheme="$(kreadconfig6 --file kdeglobals --group KDE --key LookAndFeelPackage 2>/dev/null || true)"
+fi
+
+normalized="$(printf '%s' "$scheme" | tr '[:upper:]' '[:lower:]')"
+
+if [[ "$normalized" =~ dark|night ]]; then
+  printf 'dark\n'
+else
+  printf 'light\n'
+fi

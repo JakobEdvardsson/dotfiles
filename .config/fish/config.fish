@@ -2,7 +2,27 @@ set -gx EDITOR nvim
 set -gx ZELLIJ_AUTO_ATTACH true
 set -gx PATH /home/jakobe/.local/bin $PATH
 
+function __kde_theme_refresh --description "Sync terminal theme vars from KDE"
+    set -l helper "$HOME/.config/theme-sync/bin/kde-theme-mode"
+    if test -x "$helper"
+        set -l mode (string trim -- ($helper 2>/dev/null))
+        if test "$mode" = dark
+            set -gx TERMINAL_THEME_MODE dark
+            set -gx BAT_THEME OneHalfDark
+        else
+            set -gx TERMINAL_THEME_MODE light
+            set -gx BAT_THEME OneHalfLight
+        end
+    end
+end
+
+function __kde_theme_refresh_prompt --on-event fish_prompt
+    __kde_theme_refresh
+end
+
 if status is-interactive
+    __kde_theme_refresh
+
     # eval (zellij setup --generate-auto-start fish | string collect)
 
     zoxide init fish | source
