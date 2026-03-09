@@ -3,6 +3,6 @@ font-family = JetBrains Mono
 mouse-hide-while-typing = true
 scrollback-limit = 1000000
 window-save-state = always
-theme = light:Builtin Light, dark:Builtin Dark
+theme = light:Atom One Light, dark:Atom One Dark
 mouse-scroll-multiplier = 1.0
 bell-audio-volume = 0

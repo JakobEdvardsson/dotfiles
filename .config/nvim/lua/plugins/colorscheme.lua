@@ -1,6 +1,6 @@
 return {
   "navarasu/onedark.nvim",
-  priority = 1000, -- make sure to load this before all the other start plugins
+  priority = 1000,
   config = function()
     local helper = vim.fn.expand("~/.config/theme-sync/bin/kde-theme-mode")
 
@@ -43,6 +43,7 @@ return {
       if vim.g._theme_mode_applied == mode then
         return
       end
+
       vim.o.background = mode
       require("onedark").setup({ style = mode })
       require("onedark").load()
@@ -62,24 +63,27 @@ return {
     sync_mode_from_background()
     vim.api.nvim_create_user_command("ThemeSync", sync_mode_from_background, {})
     vim.api.nvim_create_user_command("KdeThemeSync", sync_mode_from_background, {})
+
     vim.api.nvim_create_autocmd("OptionSet", {
       pattern = "background",
       group = vim.api.nvim_create_augroup("theme_sync", { clear = true }),
       callback = sync_mode_from_background,
     })
+
     vim.api.nvim_create_autocmd("VimEnter", {
       group = "theme_sync",
       callback = function()
-        -- Enable DEC private mode 2031 so terminal notifies nvim when OS theme changes.
         pcall(vim.api.nvim_ui_send, "\27[?2031h")
       end,
     })
+
     vim.api.nvim_create_autocmd("VimLeavePre", {
       group = "theme_sync",
       callback = function()
         pcall(vim.api.nvim_ui_send, "\27[?2031l")
       end,
     })
+
     if vim.env.ZELLIJ then
       vim.api.nvim_create_autocmd({ "FocusGained", "VimResume", "BufEnter" }, {
         group = "theme_sync",

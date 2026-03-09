@@ -5,7 +5,7 @@ git:
     - trunk
   ignoreWhitespaceInDiffView: true
   pagers:
-    - pager: ~/.config/theme-sync/bin/delta-auto
+    - pager: /home/jakobe/.config/theme-sync/bin/delta-auto
 
 # quitOnTopLevelReturn: true
 promptToReturnFromSubprocess: false
