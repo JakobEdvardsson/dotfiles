@@ -36,4 +36,24 @@ return {
       },
     },
   },
+  {
+    "stevearc/conform.nvim",
+    opts = function(_, opts)
+      opts.default_format_opts = opts.default_format_opts or {}
+      opts.default_format_opts.async = true
+
+      opts.formatters = opts.formatters or {}
+      opts.formatters.oxfmt = {
+        command = "pnpm",
+        args = { "exec", "oxfmt", "--stdin-filepath", "$FILENAME" },
+        stdin = true,
+      }
+
+      opts.formatters_by_ft = opts.formatters_by_ft or {}
+      opts.formatters_by_ft.javascript = { "oxfmt" }
+      opts.formatters_by_ft.javascriptreact = { "oxfmt" }
+      opts.formatters_by_ft.typescript = { "oxfmt" }
+      opts.formatters_by_ft.typescriptreact = { "oxfmt" }
+    end,
+  },
 }
