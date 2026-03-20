@@ -290,6 +290,9 @@ _launch=Meta+W
 _launch=none
 new-window=Meta+Return
 
+[services][net.local.toggle-theme.desktop]
+_launch=Meta+Shift+C
+
 [services][org.kde.konsole.desktop]
 _launch=none
 

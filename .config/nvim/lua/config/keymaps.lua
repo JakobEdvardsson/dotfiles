@@ -4,6 +4,53 @@
 
 local map = vim.keymap.set
 
+local function open_file_from_head()
+  local file = vim.api.nvim_buf_get_name(0)
+  local filetype = vim.bo.filetype
+  if file == "" then
+    vim.notify("Current buffer has no file on disk", vim.log.levels.WARN)
+    return
+  end
+
+  local file_dir = vim.fs.dirname(file)
+  local git_root_result = vim.system({ "git", "rev-parse", "--show-toplevel" }, { cwd = file_dir }):wait()
+  if git_root_result.code ~= 0 then
+    vim.notify("Current file is not in a Git repository", vim.log.levels.WARN)
+    return
+  end
+
+  local git_root = vim.trim(git_root_result.stdout or "")
+  local relative_path = vim.fs.relpath(git_root, file)
+  if not relative_path then
+    vim.notify("Failed to resolve file path relative to Git root", vim.log.levels.ERROR)
+    return
+  end
+
+  local head_file_result = vim.system({ "git", "show", "HEAD:" .. relative_path }, { cwd = git_root, text = true }):wait()
+  if head_file_result.code ~= 0 then
+    vim.notify("File does not exist at HEAD", vim.log.levels.WARN)
+    return
+  end
+
+  vim.cmd("vsplit")
+
+  local head_buf = vim.api.nvim_create_buf(false, true)
+  local lines = vim.split(head_file_result.stdout or "", "\n", { plain = true })
+  if lines[#lines] == "" then
+    table.remove(lines, #lines)
+  end
+
+  vim.api.nvim_win_set_buf(0, head_buf)
+  vim.api.nvim_buf_set_lines(head_buf, 0, -1, false, lines)
+  vim.api.nvim_buf_set_name(head_buf, string.format("%s [HEAD]", relative_path))
+  vim.bo[head_buf].filetype = filetype
+  vim.bo[head_buf].buftype = "nofile"
+  vim.bo[head_buf].bufhidden = "wipe"
+  vim.bo[head_buf].swapfile = false
+  vim.bo[head_buf].modifiable = false
+  vim.bo[head_buf].readonly = true
+end
+
 -- Move to window
 for _, key in ipairs({ "<C-Up>", "<C-Down>", "<C-Left>", "<C-Right>" }) do
   vim.keymap.del({ "n" }, key)
@@ -17,6 +64,9 @@ map("n", "<C-S-Up>", ":resize +2<CR>", { noremap = true, silent = true })
 map("n", "<C-S-Down>", ":resize -2<CR>", { noremap = true, silent = true })
 map("n", "<C-S-Left>", ":vertical resize -2<CR>", { noremap = true, silent = true })
 map("n", "<C-S-Right>", ":vertical resize +2<CR>", { noremap = true, silent = true })
+
+map("n", "<S-Down>", "<C-e>", { noremap = true, silent = true, desc = "Scroll down one line without moving cursor" })
+map("n", "<S-Up>", "<C-y>", { noremap = true, silent = true, desc = "Scroll up one line without moving cursor" })
 
 -- buffers
 map("n", "<S-Left>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
@@ -98,3 +148,5 @@ vim.keymap.set("n", "<leader>xe", function()
     vim.cmd("DiagSeverity INFO")
   end
 end, { desc = "Toggle diagnostics error-only / all" })
+
+map("n", "<leader>gH", open_file_from_head, { desc = "Open current file from HEAD" })

@@ -4,14 +4,20 @@ return {
   config = function()
     local helper = vim.fn.expand("~/.config/theme-sync/bin/kde-theme-mode")
 
+    local function detect_mode_from_env()
+      local mode = vim.env.TERMINAL_THEME_MODE
+      if mode == "dark" or mode == "light" then
+        return mode
+      end
+    end
+
     local function detect_mode_from_kde()
       if vim.fn.executable(helper) == 1 then
         local out = vim.fn.systemlist(helper)
-        if vim.v.shell_error == 0 and out[1] == "dark" then
-          return "dark"
+        if vim.v.shell_error == 0 and (out[1] == "dark" or out[1] == "light") then
+          return out[1]
         end
       end
-      return "light"
     end
 
     local function refresh_ui()
@@ -53,10 +59,7 @@ return {
     end
 
     local function sync_mode_from_background()
-      local mode = vim.o.background
-      if vim.env.ZELLIJ then
-        mode = detect_mode_from_kde()
-      end
+      local mode = detect_mode_from_kde() or detect_mode_from_env() or vim.o.background
       apply_mode(mode)
     end
 
@@ -84,11 +87,9 @@ return {
       end,
     })
 
-    if vim.env.ZELLIJ then
-      vim.api.nvim_create_autocmd({ "FocusGained", "VimResume", "BufEnter" }, {
-        group = "theme_sync",
-        callback = sync_mode_from_background,
-      })
-    end
+    vim.api.nvim_create_autocmd({ "FocusGained", "VimResume", "BufEnter" }, {
+      group = "theme_sync",
+      callback = sync_mode_from_background,
+    })
   end,
 }

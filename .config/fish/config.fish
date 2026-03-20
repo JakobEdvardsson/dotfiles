@@ -4,6 +4,7 @@ set -gx PATH /home/jakobe/.local/bin $PATH
 
 function __kde_theme_refresh --description "Sync terminal theme vars from KDE"
     set -l helper "$HOME/.config/theme-sync/bin/kde-theme-mode"
+    set -l zellij_helper "$HOME/.config/theme-sync/bin/sync-zellij-theme"
     if test -x "$helper"
         set -l mode (string trim -- ($helper 2>/dev/null))
         if test "$mode" = "$__kde_theme_last_mode"
@@ -15,6 +16,9 @@ function __kde_theme_refresh --description "Sync terminal theme vars from KDE"
         else
             set -gx TERMINAL_THEME_MODE light
             set -gx BAT_THEME OneHalfLight
+        end
+        if test -x "$zellij_helper"
+            $zellij_helper >/dev/null 2>/dev/null
         end
         set -g __kde_theme_last_mode $mode
     end

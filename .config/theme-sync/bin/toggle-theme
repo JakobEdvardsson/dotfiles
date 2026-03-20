@@ -1,0 +1,13 @@
+#!/bin/bash
+
+CURRENT=$(kreadconfig5 --file kdeglobals --group General --key ColorScheme)
+
+if [[ "$CURRENT" == *Dark* ]]; then
+  plasma-apply-colorscheme BreezeLight
+else
+  plasma-apply-colorscheme BreezeDark
+fi
+
+if [[ -x "$HOME/.config/theme-sync/bin/sync-zellij-theme" ]]; then
+  "$HOME/.config/theme-sync/bin/sync-zellij-theme" >/dev/null 2>/dev/null || true
+fi

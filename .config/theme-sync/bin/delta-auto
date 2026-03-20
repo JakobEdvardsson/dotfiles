@@ -7,7 +7,7 @@ if [[ -x "$HOME/.config/theme-sync/bin/kde-theme-mode" ]]; then
 fi
 
 if [[ "$mode" == "dark" ]]; then
-  exec delta --paging=never "$@"
+  exec delta --syntax-theme=OneHalfDark --paging=never "$@"
 else
-  exec delta --light --paging=never "$@"
+  exec delta --light --syntax-theme=OneHalfLight --paging=never "$@"
 fi

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+runtime_dir="${XDG_RUNTIME_DIR:-/tmp}"
+
+find "$runtime_dir" -maxdepth 2 \( -type s -o -type p \) 2>/dev/null \
+  | grep -E '/(nvim|NVIM)[^/]*([.][0-9]+[.][0-9]+)?$' \
+  | while IFS= read -r socket; do
+      nvim --server "$socket" --remote-expr 'execute("silent ThemeSync")' >/dev/null 2>&1 || true
+    done

@@ -12,38 +12,20 @@ for arg in "$@"; do
   fi
 done
 
-mode="light"
-if [[ -x "$HOME/.config/theme-sync/bin/kde-theme-mode" ]]; then
-  mode="$($HOME/.config/theme-sync/bin/kde-theme-mode)"
-fi
+case "${1:-}" in
+  action|attach|convert-config|convert-layout|convert-theme|delete-all-sessions|delete-session|edit|help|kill-all-sessions|kill-session|list-aliases|list-sessions|options|pipe|plugin|run|setup)
+    exec "$ZELLIJ_BIN" "$@"
+    ;;
+esac
 
-if [[ "$mode" == "dark" ]]; then
-  ztheme="ayu_dark"
-else
-  ztheme="catppuccin-latte"
-fi
-
-base_config="$HOME/.config/zellij/config.kdl"
+sync_helper="$HOME/.config/theme-sync/bin/sync-zellij-theme"
 generated_config="$HOME/.config/zellij/.cache/config.auto-theme.kdl"
-mkdir -p "$(dirname "$generated_config")"
 
-if [[ -f "$base_config" ]]; then
-  awk -v new_theme="$ztheme" '
-    BEGIN { changed = 0 }
-    {
-      if (!changed && $1 == "theme") {
-        print "theme \"" new_theme "\""
-        changed = 1
-        next
-      }
-      print
-    }
-    END {
-      if (!changed) {
-        print "theme \"" new_theme "\""
-      }
-    }
-  ' "$base_config" > "$generated_config"
+if [[ -x "$sync_helper" ]]; then
+  "$sync_helper" >/dev/null
+fi
+
+if [[ -f "$generated_config" ]]; then
   exec "$ZELLIJ_BIN" --config "$generated_config" "$@"
 fi
 

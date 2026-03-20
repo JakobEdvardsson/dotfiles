@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+mode="light"
+if [[ -x "$HOME/.config/theme-sync/bin/kde-theme-mode" ]]; then
+  mode="$($HOME/.config/theme-sync/bin/kde-theme-mode)"
+fi
+
+if [[ "$mode" == "dark" ]]; then
+  ztheme="ayu_dark"
+else
+  ztheme="catppuccin-latte"
+fi
+
+base_config="$HOME/.config/zellij/config.kdl"
+generated_config="$HOME/.config/zellij/.cache/config.auto-theme.kdl"
+mkdir -p "$(dirname "$generated_config")"
+
+if [[ -f "$base_config" ]]; then
+  awk -v new_theme="$ztheme" '
+    BEGIN { changed = 0 }
+    {
+      if (!changed && $1 == "theme") {
+        print "theme \"" new_theme "\""
+        changed = 1
+        next
+      }
+      print
+    }
+    END {
+      if (!changed) {
+        print "theme \"" new_theme "\""
+      }
+    }
+  ' "$base_config" > "$generated_config"
+fi
+
+if [[ -x "$HOME/.config/theme-sync/bin/sync-nvim-theme" ]]; then
+  "$HOME/.config/theme-sync/bin/sync-nvim-theme" >/dev/null 2>&1 || true
+fi
+
+printf '%s\n' "$ztheme"
