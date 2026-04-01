@@ -1,10 +1,10 @@
 layout {
     cwd "/home/jakobe/code"
-    tab name="cloud" hide_floating_panes=true {
+    tab name="cons" hide_floating_panes=true {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
-        pane command="nvim" cwd="neo4j-cloud" {
+        pane command="nvim" cwd="neo4j-cloud/components/console-api" {
             start_suspended false
         }
         pane size=1 borderless=true {
@@ -18,18 +18,6 @@ layout {
         pane command="devpod" cwd="neo4j-cloud" {
             args "ssh" "neo4j-cloud"
             start_suspended false
-        }
-        pane size=1 borderless=true {
-            plugin location="zellij:status-bar"
-        }
-    }
-    tab name="codex" hide_floating_panes=true {
-        pane size=1 borderless=true {
-            plugin location="zellij:tab-bar"
-        }
-        pane command="codex" cwd="/home/jakobe/code/neo4j-cloud" {
-            args "--add-dir" "/home/jakobe/code/upx"
-            start_suspended true
         }
         pane size=1 borderless=true {
             plugin location="zellij:status-bar"

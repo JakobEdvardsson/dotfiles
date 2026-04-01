@@ -4,6 +4,19 @@
 
 local map = vim.keymap.set
 
+for _, key in ipairs({
+  "[b",
+  "]b",
+  "<leader><tab>l",
+  "<leader><tab>h",
+  "<leader><tab>o",
+  "<leader><tab>d",
+  "<leader><tab>f",
+  "<leader><tab><tab>",
+}) do
+  pcall(vim.keymap.del, "n", key)
+end
+
 local function open_file_from_head()
   local file = vim.api.nvim_buf_get_name(0)
   local filetype = vim.bo.filetype
@@ -53,7 +66,7 @@ end
 
 -- Move to window
 for _, key in ipairs({ "<C-Up>", "<C-Down>", "<C-Left>", "<C-Right>" }) do
-  vim.keymap.del({ "n" }, key)
+  pcall(vim.keymap.del, "n", key)
 end
 map("n", "<C-Left>", "<C-w>h", { noremap = true, silent = true })
 map("n", "<C-Down>", "<C-w>j", { noremap = true, silent = true })
@@ -139,6 +152,13 @@ end
 
 vim.keymap.set("n", "]d", goto_next_diag)
 vim.keymap.set("n", "[d", goto_prev_diag)
+
+map("n", "<leader>tn", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+map("n", "<leader>tp", "<cmd>tabprevious<cr>", { desc = "Prev Tab" })
+map("n", "<leader>tt", "<cmd>tabnew<cr>", { desc = "New Tab" })
+map("n", "<leader>td", "<cmd>tabclose<cr>", { desc = "Close Tab" })
+map("n", "<leader>to", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
+map("n", "<leader>tf", "<cmd>tabfirst<cr>", { desc = "First Tab" })
 
 vim.keymap.set("n", "<leader>xe", function()
   error_only = not error_only

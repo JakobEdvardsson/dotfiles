@@ -1,5 +1,7 @@
 set -gx EDITOR nvim
-set -gx ZELLIJ_AUTO_ATTACH true
+# Disabled by default to avoid shells unexpectedly attaching/creating Zellij
+# sessions during terminal startup.
+# set -gx ZELLIJ_AUTO_ATTACH true
 set -gx PATH /home/jakobe/.local/bin $PATH
 
 function __kde_theme_refresh --description "Sync terminal theme vars from KDE"
@@ -13,9 +15,11 @@ function __kde_theme_refresh --description "Sync terminal theme vars from KDE"
         if test "$mode" = dark
             set -gx TERMINAL_THEME_MODE dark
             set -gx BAT_THEME OneHalfDark
+            set -gx COLORFGBG 15\;0
         else
             set -gx TERMINAL_THEME_MODE light
             set -gx BAT_THEME OneHalfLight
+            set -gx COLORFGBG 0\;15
         end
         if test -x "$zellij_helper"
             $zellij_helper >/dev/null 2>/dev/null
@@ -26,6 +30,25 @@ end
 
 function __kde_theme_refresh_prompt --on-event fish_prompt
     __kde_theme_refresh
+end
+
+function codex --description "Run Codex with inline rendering inside Zellij"
+    if set -q ZELLIJ
+        if test "$TERMINAL_THEME_MODE" = dark
+            set -lx COLORFGBG 15\;0
+            set -l codex_theme one-half-dark
+        else
+            set -lx COLORFGBG 0\;15
+            set -l codex_theme one-half-light
+        end
+        if contains -- --no-alt-screen $argv
+            command codex -c "theme=\"$codex_theme\"" $argv
+        else
+            command codex -c "theme=\"$codex_theme\"" --no-alt-screen $argv
+        end
+    else
+        command codex $argv
+    end
 end
 
 if status is-interactive
