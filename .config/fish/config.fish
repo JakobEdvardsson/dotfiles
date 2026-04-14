@@ -9,9 +9,6 @@ function __kde_theme_refresh --description "Sync terminal theme vars from KDE"
     set -l zellij_helper "$HOME/.config/theme-sync/bin/sync-zellij-theme"
     if test -x "$helper"
         set -l mode (string trim -- ($helper 2>/dev/null))
-        if test "$mode" = "$__kde_theme_last_mode"
-            return
-        end
         if test "$mode" = dark
             set -gx TERMINAL_THEME_MODE dark
             set -gx BAT_THEME OneHalfDark
@@ -21,15 +18,14 @@ function __kde_theme_refresh --description "Sync terminal theme vars from KDE"
             set -gx BAT_THEME OneHalfLight
             set -gx COLORFGBG 0\;15
         end
+        if test "$mode" = "$__kde_theme_last_mode"
+            return
+        end
         if test -x "$zellij_helper"
             $zellij_helper >/dev/null 2>/dev/null
         end
         set -g __kde_theme_last_mode $mode
     end
-end
-
-function __kde_theme_refresh_prompt --on-event fish_prompt
-    __kde_theme_refresh
 end
 
 function codex --description "Run Codex with inline rendering inside Zellij"
