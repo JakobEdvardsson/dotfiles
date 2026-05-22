@@ -39,23 +39,25 @@ local function open_file_from_head()
     return
   end
 
-  local head_file_result = vim.system({ "git", "show", "HEAD:" .. relative_path }, { cwd = git_root, text = true }):wait()
-  if head_file_result.code ~= 0 then
-    vim.notify("File does not exist at HEAD", vim.log.levels.WARN)
+  local master_file_result = vim
+    .system({ "git", "show", "master:" .. relative_path }, { cwd = git_root, text = true })
+    :wait()
+  if master_file_result.code ~= 0 then
+    vim.notify("File does not exist at master", vim.log.levels.WARN)
     return
   end
 
   vim.cmd("vsplit")
 
   local head_buf = vim.api.nvim_create_buf(false, true)
-  local lines = vim.split(head_file_result.stdout or "", "\n", { plain = true })
+  local lines = vim.split(master_file_result.stdout or "", "\n", { plain = true })
   if lines[#lines] == "" then
     table.remove(lines, #lines)
   end
 
   vim.api.nvim_win_set_buf(0, head_buf)
   vim.api.nvim_buf_set_lines(head_buf, 0, -1, false, lines)
-  vim.api.nvim_buf_set_name(head_buf, string.format("%s [HEAD]", relative_path))
+  vim.api.nvim_buf_set_name(head_buf, string.format("%s [MASTER]", relative_path))
   vim.bo[head_buf].filetype = filetype
   vim.bo[head_buf].buftype = "nofile"
   vim.bo[head_buf].bufhidden = "wipe"
@@ -169,4 +171,4 @@ vim.keymap.set("n", "<leader>xe", function()
   end
 end, { desc = "Toggle diagnostics error-only / all" })
 
-map("n", "<leader>gH", open_file_from_head, { desc = "Open current file from HEAD" })
+map("n", "<leader>gm", open_file_from_head, { desc = "Open current file from Master" })

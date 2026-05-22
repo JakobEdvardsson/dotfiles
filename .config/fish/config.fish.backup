@@ -100,6 +100,3 @@ if not string match -q -- $PNPM_HOME $PATH
     set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/home/jakobe/google-cloud-sdk/path.fish.inc' ]; . '/home/jakobe/google-cloud-sdk/path.fish.inc'; end

@@ -253,9 +253,22 @@ function kubeconnect --description "Connect to a cluster by exact name"
 
             case azure
                 if test -n "$azure_subscription_id"
-                    az account set --subscription $azure_subscription_id
+                    az account set --subscription $azure_subscription_id 2>/dev/null
                     if test $status -ne 0
-                        return 1
+                        echo "Refreshing Azure subscription cache"
+                        az account list --refresh >/dev/null 2>&1
+                        az account set --subscription $azure_subscription_id 2>/dev/null
+                        if test $status -ne 0
+                            echo "Running az login for subscription $azure_subscription_id"
+                            az login >/dev/null
+                            if test $status -ne 0
+                                return 1
+                            end
+                            az account set --subscription $azure_subscription_id
+                            if test $status -ne 0
+                                return 1
+                            end
+                        end
                     end
                 end
 
