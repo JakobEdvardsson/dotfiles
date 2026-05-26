@@ -1,0 +1,53 @@
+theme = "github_light"
+
+[editor]
+line-number = "relative"
+mouse = true
+auto-save = false
+completion-trigger-len = 1
+true-color = true
+rulers = []
+color-modes = true
+idle-timeout = 1200
+default-yank-register = "+"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+
+[editor.statusline]
+left = [
+  "mode",
+  "spinner",
+  "file-name",
+  "read-only-indicator",
+  "file-modification-indicator",
+]
+right = ["diagnostics", "selections", "position", "file-encoding", "file-type"]
+separator = "│"
+
+[editor.lsp]
+display-messages = true
+display-inlay-hints = true
+auto-signature-help = true
+snippets = true
+
+[editor.gutters]
+layout = ["diff", "line-numbers", "spacer", "diagnostics"]
+
+[editor.indent-guides]
+render = true
+character = "╎"
+skip-levels = 1
+
+[keys.normal]
+A-d = ":run-shell-command zellij run --floating --width 90%% --height 90%% --x 5%% --y 5%% --close-on-exit -- sh -c 'git diff HEAD -- %{buffer_name} | delta'"
+C-g = [":write-all", ":run-shell-command zellij run --floating --width 90%% --height 90%% --x 5%% --y 5%% --close-on-exit -- env EDITOR=hx lazygit"]
+
+[keys.normal.space]
+f = "file_picker_in_current_directory"
+F = "file_picker"

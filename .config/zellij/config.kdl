@@ -255,7 +255,7 @@ load_plugins {
 // Choose the theme that is specified in the themes section.
 // Default: default
 // 
-theme "ayu_light"
+theme "ayu-light"
  
 // Choose the base input mode of zellij.
 // Default: normal

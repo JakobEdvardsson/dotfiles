@@ -6,9 +6,12 @@
 -- Set to "basedpyright" to use basedpyright instead of pyright.
 vim.g.lazyvim_python_lsp = "basedpyright"
 
--- Disable eslint auto-format in UPX (type-aware eslint rules are heavy on save)
-if vim.fn.getcwd() == "/home/jakobe/code/upx" then
+if vim.fn.getcwd():match("^/home/jakobe/code/upx") then
   vim.g.lazyvim_eslint_auto_format = false
+  -- LazyVim defaults updatetime to 200ms — CursorHold fires 5x/sec, triggering
+  -- diagnostics, inlay hints, document highlights, and lspsaga's symbol winbar
+  -- on every pause. Match VS Code's ~1s debounce instead.
+  vim.opt.updatetime = 1200
 end
 
 vim.opt.wrap = true

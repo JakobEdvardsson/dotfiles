@@ -11,3 +11,6 @@
 	insteadOf = https://github.com/
 [pull]
 	rebase = true
+
+[delta]
+    light = true

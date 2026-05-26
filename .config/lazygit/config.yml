@@ -4,11 +4,6 @@ git:
     - main
     - trunk
   ignoreWhitespaceInDiffView: true
-  pagers:
-    - pager: /home/jakobe/.config/theme-sync/bin/delta-auto
 
 # quitOnTopLevelReturn: true
 promptToReturnFromSubprocess: false
-# os:
-#   edit: "zed {{filename}}"
-#   editAtLine: "zed {{filename}}:{{line}}"

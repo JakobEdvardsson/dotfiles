@@ -4,34 +4,52 @@ return {
     opts = {
       servers = {
         vtsls = {
+          cmd = { "pnpm", "exec", "vtsls", "--stdio" },
           settings = {
             vtsls = {
+              autoUseWorkspaceTsdk = true,
               tsserver = {
-                -- Avoid tsserver GC stalls in large TypeScript workspaces.
                 maxTsServerMemory = 8192,
               },
-              -- experimental = {
-              --   completion = {
-              --     -- Keep completion payloads smaller and cheaper to rank/render.
-              --     entriesLimit = 25,
-              --     enableServerSideFuzzyMatch = false,
-              --   },
-              -- },
+              experimental = {
+                completion = {
+                  entriesLimit = 25,
+                  enableServerSideFuzzyMatch = false,
+                },
+              },
             },
-            -- typescript = {
-            --   suggest = {
-            --     -- Skip broad symbol harvesting from imports/module exports.
-            --     includeCompletionsForModuleExports = false,
-            --     includeCompletionsForImportStatements = false,
-            --   },
-            -- },
-            -- javascript = {
-            --   suggest = {
-            --     includeCompletionsForModuleExports = false,
-            --     includeCompletionsForImportStatements = false,
-            --   },
-            -- },
+            typescript = {
+              suggest = {
+                includeCompletionsForModuleExports = false,
+                includeCompletionsForImportStatements = false,
+              },
+              preferences = {
+                preferGoToSourceDefinition = true,
+              },
+            },
+            javascript = {
+              suggest = {
+                includeCompletionsForModuleExports = false,
+                includeCompletionsForImportStatements = false,
+              },
+              preferences = {
+                preferGoToSourceDefinition = true,
+              },
+            },
           },
+        },
+        oxlint = {
+          cmd = { "pnpm", "exec", "oxlint", "--lsp" },
+        },
+        eslint = {
+          condition = function(ctx)
+            return not (ctx.root_dir or ""):match("/upx/")
+          end,
+        },
+        tailwindcss = {
+          condition = function(ctx)
+            return not (ctx.root_dir or ""):match("/upx/")
+          end,
         },
       },
     },

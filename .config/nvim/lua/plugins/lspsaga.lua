@@ -15,6 +15,7 @@ return {
       },
       symbol_in_winbar = {
         enable = true,
+        delay = 1200,
       },
       finder = {
         default = "ref+imp",
