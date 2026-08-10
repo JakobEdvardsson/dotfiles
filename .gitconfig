@@ -12,5 +12,9 @@
 [pull]
 	rebase = true
 
+[diff]
+    colorMoved = default
+    colorMovedWS = allow-indentation-change
+
 [delta]
     light = true

@@ -3,44 +3,17 @@ set -gx EDITOR nvim
 # sessions during terminal startup.
 # set -gx ZELLIJ_AUTO_ATTACH true
 set -gx PATH /home/jakobe/.local/bin $PATH
-
-function __kde_theme_refresh --description "Sync terminal theme vars from KDE"
-    set -l helper "$HOME/.config/theme-sync/bin/kde-theme-mode"
-    set -l zellij_helper "$HOME/.config/theme-sync/bin/sync-zellij-theme"
-    if test -x "$helper"
-        set -l mode (string trim -- ($helper 2>/dev/null))
-        if test "$mode" = dark
-            set -gx TERMINAL_THEME_MODE dark
-            set -gx BAT_THEME OneHalfDark
-            set -gx COLORFGBG 15\;0
-        else
-            set -gx TERMINAL_THEME_MODE light
-            set -gx BAT_THEME OneHalfLight
-            set -gx COLORFGBG 0\;15
-        end
-        if test "$mode" = "$__kde_theme_last_mode"
-            return
-        end
-        if test -x "$zellij_helper"
-            $zellij_helper >/dev/null 2>/dev/null
-        end
-        set -g __kde_theme_last_mode $mode
-    end
-end
+# Go-installed binaries (go install -> $GOPATH/bin)
+fish_add_path (go env GOPATH)/bin
+set -gx BAT_THEME OneHalfLight
+set -gx COLORFGBG 0\;15
 
 function codex --description "Run Codex with inline rendering inside Zellij"
     if set -q ZELLIJ
-        if test "$TERMINAL_THEME_MODE" = dark
-            set -lx COLORFGBG 15\;0
-            set -l codex_theme one-half-dark
-        else
-            set -lx COLORFGBG 0\;15
-            set -l codex_theme one-half-light
-        end
         if contains -- --no-alt-screen $argv
-            command codex -c "theme=\"$codex_theme\"" $argv
+            command codex -c "theme=\"one-half-light\"" $argv
         else
-            command codex -c "theme=\"$codex_theme\"" --no-alt-screen $argv
+            command codex -c "theme=\"one-half-light\"" --no-alt-screen $argv
         end
     else
         command codex $argv
@@ -48,8 +21,6 @@ function codex --description "Run Codex with inline rendering inside Zellij"
 end
 
 if status is-interactive
-    __kde_theme_refresh
-
     # eval (zellij setup --generate-auto-start fish | string collect)
 
     zoxide init fish | source

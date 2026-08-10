@@ -1,0 +1,282 @@
+#!/usr/bin/env python3
+"""Collect every correlation id (traces, linked traces, request ids) from a
+Cloud Logging search and emit a ready-to-paste OR filter plus a console link.
+
+Run with -h for full usage.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import subprocess
+import sys
+import time
+from datetime import datetime, timezone
+from urllib.parse import parse_qs, quote, unquote
+
+
+def log(msg: str) -> None:
+    print(msg, file=sys.stderr, flush=True)
+
+CONSOLE_BASE = "https://console.cloud.google.com/logs/query"
+
+EPILOG = """\
+what it does
+------------
+1. runs your Logging search with `gcloud logging read`
+2. reads the otelTraceID, otelLinkedTraceID and request_id off every matching
+   log line
+3. prints an OR filter of all of them, plus a console link to that filter over
+   the same project + time window
+
+typical workflow
+----------------
+find the thing you care about in the Logging console (e.g. one dbid), copy the
+URL from your address bar, then:
+
+    ./collect_traces.py '<paste the console URL>'
+
+paste the printed `( ... )` block into the Logging query box, or just open the
+printed `# open:` link, to see every related trace across ALL services
+(console-api, console-reconciler, operator, ...), not just the pods you filtered
+on originally.
+
+input
+-----
+the first argument is EITHER a full Logging console URL (project + time window
+are read from it) OR a raw query string (then pass --project, and --start/--end
+to bound it). with no argument it reads the query/URL from stdin.
+
+a raw query is the same multiline text you type in the console box, e.g.:
+
+    jsonPayload."neo4jcloud.environment"="staging"
+    labels."k8s-pod/app":"console"
+    2723411e
+
+what it collects
+----------------
+otelTraceID and request_id off every matching log line. a trace that shows up as
+another line's otelLinkedTraceID is a shared PRODUCER/scan trace (one fast/slow
+scan enqueues the whole fleet under a single trace), so by default those are
+dropped -- otherwise one scan trace drags in hundreds of unrelated instances.
+pass --include-producers to keep them. all-zero / "0" sentinels are skipped.
+
+examples
+--------
+    # from a console URL (project + window come from the URL)
+    ./collect_traces.py 'https://console.cloud.google.com/logs/query;query=...;startTime=...;endTime=...?project=ne-staging-ut1m'
+
+    # from a raw query, bounding the window yourself
+    ./collect_traces.py --project ne-staging-ut1m \\
+        --start 2026-07-01T08:00:00Z --end 2026-07-02T09:00:00Z \\
+        'jsonPayload."neo4jcloud.environment"="staging"
+    labels."k8s-pod/app":"console"
+    2723411e'
+
+    # from stdin
+    pbpaste | ./collect_traces.py
+"""
+
+# Values that mean "no id present" and must never be searched on.
+SENTINELS = {"", "0", "00000000000000000000000000000000", "0000000000000000", None}
+
+
+def deep_unquote(value: str) -> str:
+    """Percent-decode until stable.
+
+    The Logging console is inconsistent: characters you type manually (notably
+    the parentheses/spaces around an `( a OR b )` group) come back double-encoded
+    (e.g. `%2528` -> `%28` -> `(`), while quotes are only single-encoded. Decoding
+    once would leave literal `%28`/`%29` in the filter and gcloud rejects them.
+    """
+    for _ in range(5):
+        decoded = unquote(value)
+        if decoded == value:
+            break
+        value = decoded
+    return value
+
+
+def parse_console_url(url: str) -> dict[str, str]:
+    """Pull query / startTime / endTime / project out of a Logging console URL.
+
+    The console packs everything as ';'-separated matrix params before the '?',
+    which urlparse mishandles, so split the raw string ourselves.
+    """
+    base, _, qs = url.partition("?")
+    project = (parse_qs(qs).get("project") or [""])[0] if qs else ""
+
+    out: dict[str, str] = {"project": project}
+    for segment in base.split(";")[1:]:
+        if "=" not in segment:
+            continue
+        key, _, val = segment.partition("=")
+        if key in ("query", "startTime", "endTime"):
+            out[key] = deep_unquote(val)
+    return out
+
+
+def build_read_filter(query_text: str, start: str | None, end: str | None) -> str:
+    """Turn a console query (newline == AND) into a gcloud logging filter."""
+    terms = [line.strip() for line in query_text.splitlines() if line.strip()]
+    parts = [f"({t})" if " OR " in t else t for t in terms]
+    if start:
+        parts.append(f'timestamp>="{start}"')
+    if end:
+        parts.append(f'timestamp<="{end}"')
+    return " AND ".join(parts)
+
+
+def freshness_for(start: str | None) -> str:
+    """gcloud logging read defaults to a 1d lookback; widen it to cover start."""
+    if not start:
+        return "1d"
+    try:
+        started = datetime.fromisoformat(start.replace("Z", "+00:00"))
+    except ValueError:
+        return "365d"
+    days = (datetime.now(timezone.utc) - started).total_seconds() / 86400
+    return f"{max(1, math.ceil(days) + 1)}d"
+
+
+def run_gcloud(read_filter: str, project: str, limit: int, freshness: str) -> list[dict]:
+    cmd = [
+        "gcloud", "logging", "read", read_filter,
+        f"--project={project}",
+        f"--limit={limit}",
+        f"--freshness={freshness}",
+        "--format=json",
+    ]
+    log(f"→ running gcloud logging read (project={project}, limit={limit}, freshness={freshness})")
+    log("  filter:")
+    for line in read_filter.split(" AND "):
+        log(f"    {line}")
+    log("  querying Cloud Logging (this can take a while for wide windows)...")
+    started = time.monotonic()
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    elapsed = time.monotonic() - started
+    if result.returncode != 0:
+        sys.exit(f"gcloud failed after {elapsed:.1f}s:\n{result.stderr}")
+    entries = json.loads(result.stdout or "[]", strict=False)
+    log(f"✓ fetched {len(entries)} log entries in {elapsed:.1f}s")
+    if len(entries) >= limit:
+        log(f"! hit --limit={limit}; results may be truncated (raise --limit)")
+    return entries
+
+
+def collect(entries: list[dict]) -> tuple[set[str], set[str], set[str]]:
+    """Return (own, linked, requests): otelTraceID, otelLinkedTraceID, request_id."""
+    own: set[str] = set()
+    linked: set[str] = set()
+    requests: set[str] = set()
+    for entry in entries:
+        jp = entry.get("jsonPayload") or {}
+        for field, bucket in (("otelTraceID", own), ("otelLinkedTraceID", linked), ("request_id", requests)):
+            val = jp.get(field)
+            if val not in SENTINELS:
+                bucket.add(str(val))
+    return own, linked, requests
+
+
+def render_filter(traces: set[str], requests: set[str]) -> str:
+    terms = [f'jsonPayload.otelTraceID="{t}"' for t in sorted(traces)]
+    terms += [f'jsonPayload.request_id="{r}"' for r in sorted(requests)]
+    if not terms:
+        return ""
+    return "(\n" + " OR\n".join(terms) + "\n)"
+
+
+def build_output_url(filter_text: str, project: str, start: str | None, end: str | None) -> str:
+    matrix = [f"query={quote(filter_text, safe='')}"]
+    if start:
+        matrix.append(f"startTime={start}")
+    if end:
+        matrix.append(f"endTime={end}")
+    return f"{CONSOLE_BASE};" + ";".join(matrix) + f"?project={project}"
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(
+        description=__doc__,
+        epilog=EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    ap.add_argument(
+        "input",
+        nargs="?",
+        help="Logging console URL, or a raw query string; if omitted, read from stdin",
+    )
+    ap.add_argument("--project", help="GCP project id (overrides the one in a URL)")
+    ap.add_argument("--start", help='window start, RFC3339 e.g. 2026-07-01T08:00:00Z (overrides URL)')
+    ap.add_argument("--end", help='window end, RFC3339 e.g. 2026-07-02T09:00:00Z (overrides URL)')
+    ap.add_argument(
+        "--limit", type=int, default=10000, help="max log entries to scan (default: 10000)"
+    )
+    ap.add_argument(
+        "--include-producers",
+        action="store_true",
+        help="keep shared producer/scan traces (a trace referenced as another's "
+        "otelLinkedTraceID). Off by default because one fast/slow scan trace covers "
+        "the whole fleet and floods results with unrelated instances.",
+    )
+    args = ap.parse_args()
+
+    if args.input is None and sys.stdin.isatty():
+        ap.print_help()
+        return
+
+    raw = (args.input or sys.stdin.read()).strip()
+    if not raw:
+        ap.error("no input provided")
+
+    if raw.startswith("http"):
+        parsed = parse_console_url(raw)
+        query_text = parsed.get("query", "")
+        project = args.project or parsed.get("project", "")
+        start = args.start or parsed.get("startTime")
+        end = args.end or parsed.get("endTime")
+    else:
+        query_text = raw
+        project = args.project or ""
+        start = args.start
+        end = args.end
+
+    if not query_text:
+        ap.error("could not determine a query from the input")
+    if not project:
+        ap.error("no project (pass --project or use a URL with ?project=)")
+
+    log(f"window: {start or '(freshness default)'} .. {end or 'now'}")
+
+    read_filter = build_read_filter(query_text, start, end)
+    entries = run_gcloud(read_filter, project, args.limit, freshness_for(start))
+    own, linked, requests = collect(entries)
+
+    producers = own & linked
+    if args.include_producers:
+        traces = own | linked
+    else:
+        traces = own - linked
+        if producers:
+            log(
+                f"! dropped {len(producers)} shared producer/scan trace(s) that fan out "
+                "to other instances (use --include-producers to keep them)"
+            )
+
+    filter_text = render_filter(traces, requests)
+
+    log(f"✓ {len(traces)} trace id(s), {len(requests)} request id(s) in output")
+
+    if not filter_text:
+        log("! no correlation ids found")
+        return
+
+    print(filter_text)
+    print()
+    print("# open:")
+    print(build_output_url(filter_text, project, start, end))
+
+
+if __name__ == "__main__":
+    main()

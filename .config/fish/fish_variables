@@ -3,4 +3,4 @@
 SETUVAR --export GTK_IM_MODULE:simple
 SETUVAR --export UV_PROJECT_ENVIRONMENT:tmp/custom\x2dvenv
 SETUVAR __fish_initialized:4300
-SETUVAR fish_user_paths:/usr/bin
+SETUVAR fish_user_paths:/home/jakobe/go/bin\x1e/usr/bin

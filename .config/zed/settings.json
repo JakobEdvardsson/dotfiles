@@ -62,9 +62,5 @@
   "ui_font_size": 16.0,
   "buffer_font_size": 15.0,
   "vertical_scroll_margin": 10,
-  "theme": {
-    "mode": "dark",
-    "light": "One Light",
-    "dark": "Ayu Dark",
-  },
+  "theme": "One Light",
 }
