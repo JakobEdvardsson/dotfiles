@@ -92,6 +92,9 @@ map("n", "<S-Down>", "<C-e>", { noremap = true, silent = true, desc = "Scroll do
 map("n", "<S-Up>", "<C-y>", { noremap = true, silent = true, desc = "Scroll up one line without moving cursor" })
 
 -- buffers
+map("n", "<leader>ba", function()
+  Snacks.bufdelete.all()
+end, { desc = "Delete All Buffers" })
 map("n", "<S-Left>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
 map("n", "<S-Right>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 
@@ -105,6 +108,11 @@ map("n", "s", require("substitute").operator, { noremap = true })
 map("n", "ss", require("substitute").line, { noremap = true })
 map("n", "S", require("substitute").eol, { noremap = true })
 map("x", "s", require("substitute").visual, { noremap = true })
+
+-- git
+map("x", "ga", function()
+  require("gitsigns").stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+end, { desc = "Git add selection" })
 
 -- Terminal Mappings
 map("t", "<C-\\>", "<cmd>close<cr>", { desc = "Hide Terminal" })

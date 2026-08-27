@@ -117,11 +117,16 @@ function kubeconnect --description "Connect to a cluster by exact name"
         set -l clusters_file "$repo_root/services/environment/clusters/$env_dir/orchestras.json.m4"
         set -l brain_file "$repo_root/services/environment/clusters/$env_dir/brain.json.m4"
         set -l isolation_units_file "$repo_root/services/environment/isolation-units/$env_dir.json.m4"
+        set -l clusters_v1_file "$repo_root/services/environment/clusters/$env_dir/clusters-v1.json.tmpl"
 
         set -l kind
         set -l region
         set -l isolation_id
+        set -l gcp_project_id
+        set -l aws_account_id
+        set -l azure_subscription_id
         set -l is_brain 0
+        set -l from_v1 0
 
         if string match -q '*-infra' -- $cluster
             if test ! -f "$brain_file"
@@ -139,24 +144,33 @@ function kubeconnect --description "Connect to a cluster by exact name"
                 return 1
             end
         else
-            if test ! -f "$clusters_file"
-                echo "Cluster metadata file not found: $clusters_file"
-                return 1
+            if test -f "$clusters_file"
+                set -l cluster_key (__kubeconnect_jq_key_or_first $clusters_file $cluster)
+                set kind (jq -r --arg cluster "$cluster_key" '.[$cluster].kind // empty' "$clusters_file")
+                set region (jq -r --arg cluster "$cluster_key" '.[$cluster].spec.region // empty' "$clusters_file")
+                set isolation_id (jq -r --arg cluster "$cluster_key" '.[$cluster].isolation_id // empty' "$clusters_file")
             end
-
-            if test ! -f "$isolation_units_file"
-                echo "Isolation unit metadata file not found: $isolation_units_file"
-                return 1
-            end
-
-            set -l cluster_key (__kubeconnect_jq_key_or_first $clusters_file $cluster)
-            set kind (jq -r --arg cluster "$cluster_key" '.[$cluster].kind // empty' "$clusters_file")
-            set region (jq -r --arg cluster "$cluster_key" '.[$cluster].spec.region // empty' "$clusters_file")
-            set isolation_id (jq -r --arg cluster "$cluster_key" '.[$cluster].isolation_id // empty' "$clusters_file")
 
             if test -z "$kind" -o -z "$region" -o -z "$isolation_id"
-                echo "Cluster '$cluster' was not found in $clusters_file"
-                return 1
+                if not test -f "$clusters_v1_file"
+                    echo "Cluster '$cluster' was not found in $clusters_file"
+                    return 1
+                end
+
+                set -l v1_row (jq -r --arg name "$cluster" '.items[]? | select(.metadata.name == $name) | [(.spec.cloud_provider // ""), (.spec.region // ""), (.spec.isolation_unit.gcp_project_id // ""), (.spec.isolation_unit.aws_account_id // ""), (.spec.isolation_unit.azure_subscription_id // "")] | @tsv' "$clusters_v1_file")
+
+                if test -z "$v1_row"
+                    echo "Cluster '$cluster' was not found in $clusters_file or $clusters_v1_file"
+                    return 1
+                end
+
+                set -l v1_fields (string split \t -- $v1_row)
+                set kind $v1_fields[1]
+                set region $v1_fields[2]
+                set gcp_project_id $v1_fields[3]
+                set aws_account_id $v1_fields[4]
+                set azure_subscription_id $v1_fields[5]
+                set from_v1 1
             end
         end
 
@@ -185,17 +199,24 @@ function kubeconnect --description "Connect to a cluster by exact name"
             return $status
         end
 
-        set -l resources (jq -r --arg isolation_id "$isolation_id" '.[] | select(.isolation_id == $isolation_id) | [(.resources.gcp_project_id // ""), (.resources.aws_account_id // ""), (.resources.azure_subscription_id // "")] | @tsv' "$isolation_units_file")
+        if test $from_v1 -eq 0
+            if test ! -f "$isolation_units_file"
+                echo "Isolation unit metadata file not found: $isolation_units_file"
+                return 1
+            end
 
-        if test -z "$resources"
-            echo "Isolation unit '$isolation_id' was not found in $isolation_units_file"
-            return 1
+            set -l resources (jq -r --arg isolation_id "$isolation_id" '.[] | select(.isolation_id == $isolation_id) | [(.resources.gcp_project_id // ""), (.resources.aws_account_id // ""), (.resources.azure_subscription_id // "")] | @tsv' "$isolation_units_file")
+
+            if test -z "$resources"
+                echo "Isolation unit '$isolation_id' was not found in $isolation_units_file"
+                return 1
+            end
+
+            set -l resource_fields (string split \t -- $resources)
+            set gcp_project_id $resource_fields[1]
+            set aws_account_id $resource_fields[2]
+            set azure_subscription_id $resource_fields[3]
         end
-
-        set -l resource_fields (string split \t -- $resources)
-        set -l gcp_project_id $resource_fields[1]
-        set -l aws_account_id $resource_fields[2]
-        set -l azure_subscription_id $resource_fields[3]
 
         if test "$kind" = "gcp"
             if string match -q '_*' -- $gcp_project_id

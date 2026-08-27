@@ -290,7 +290,7 @@ switch to next activity=none,none,Switch to Next Activity
 switch to previous activity=none,none,Switch to Previous Activity
 toggle do not disturb=none,none,Toggle do not disturb
 
-[services][brave-browser.desktop]
+[services][brave-origin.desktop]
 _launch=Meta+W
 
 [services][com.mitchellh.ghostty.desktop]

@@ -8,6 +8,9 @@ fish_add_path (go env GOPATH)/bin
 set -gx BAT_THEME OneHalfLight
 set -gx COLORFGBG 0\;15
 
+# GitHub MCP server token (sourced from gh so it stays SAML-authorized).
+set -gx GITHUB_PERSONAL_ACCESS_TOKEN (gh auth token)
+
 function codex --description "Run Codex with inline rendering inside Zellij"
     if set -q ZELLIJ
         if contains -- --no-alt-screen $argv
@@ -74,3 +77,8 @@ end
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/jakobe/google-cloud-sdk/path.fish.inc' ]; . '/home/jakobe/google-cloud-sdk/path.fish.inc'; end
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv fish)"
+
+# opencode
+fish_add_path /home/jakobe/.opencode/bin

@@ -3,4 +3,8 @@
 SETUVAR --export GTK_IM_MODULE:simple
 SETUVAR --export UV_PROJECT_ENVIRONMENT:tmp/custom\x2dvenv
 SETUVAR __fish_initialized:4300
-SETUVAR fish_user_paths:/home/jakobe/go/bin\x1e/usr/bin
+SETUVAR _fisher_edc_2F_bass_files:\x7e/\x2econfig/fish/functions/__bass\x2epy\x1e\x7e/\x2econfig/fish/functions/bass\x2efish
+SETUVAR _fisher_jorgebucaran_2F_fisher_files:\x7e/\x2econfig/fish/functions/fisher\x2efish\x1e\x7e/\x2econfig/fish/completions/fisher\x2efish
+SETUVAR _fisher_plugins:jorgebucaran/fisher\x1eedc/bass
+SETUVAR _fisher_upgraded_to_4_4:\x1d
+SETUVAR fish_user_paths:/home/jakobe/\x2eopencode/bin\x1e/home/jakobe/go/bin\x1e/usr/bin
