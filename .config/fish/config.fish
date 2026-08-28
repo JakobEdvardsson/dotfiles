@@ -5,7 +5,7 @@ set -gx EDITOR nvim
 set -gx PATH /home/jakobe/.local/bin $PATH
 # Go-installed binaries (go install -> $GOPATH/bin)
 fish_add_path (go env GOPATH)/bin
-set -gx BAT_THEME OneHalfLight
+set -gx BAT_THEME "Solarized (light)"
 set -gx COLORFGBG 0\;15
 
 # GitHub MCP server token (sourced from gh so it stays SAML-authorized).
@@ -14,9 +14,9 @@ set -gx GITHUB_PERSONAL_ACCESS_TOKEN (gh auth token)
 function codex --description "Run Codex with inline rendering inside Zellij"
     if set -q ZELLIJ
         if contains -- --no-alt-screen $argv
-            command codex -c "theme=\"one-half-light\"" $argv
+            command codex -c "theme=\"solarized-light\"" $argv
         else
-            command codex -c "theme=\"one-half-light\"" --no-alt-screen $argv
+            command codex -c "theme=\"solarized-light\"" --no-alt-screen $argv
         end
     else
         command codex $argv

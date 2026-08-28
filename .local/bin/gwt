@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+#
+# gwt - create a git worktree and copy local files into it so you don't
+# have to rebuild everything (node_modules, venv, caches, devenv.local, ...).
+#
+# Copies every untracked file (ignored AND non-ignored) from the current repo
+# into the new worktree, but never tracked files or any .git metadata, so the
+# new worktree's tracked content always matches the target branch.
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+usage: gwt [--from <ref>] [-n|--dry-run] <branch> [<dest>]
+
+Create a git worktree for <branch> and copy your local (ignored/untracked)
+files from the current repo into it, so you don't rebuild everything.
+
+  --from <ref>   base the new branch on <ref> (default: current HEAD)
+  -n, --dry-run  print what would be copied without creating anything
+  <branch>       new branch name (worktree is created with -b <branch>)
+  <dest>         destination dir (default: sibling of the repo root, named
+                 <repo>-<branch>)
+
+Only untracked files are copied (ignored caches/build outputs AND plain
+untracked files like devenv.local). Tracked files and all .git metadata are
+left alone, so the worktree's tracked content matches the target branch.
+
+examples
+--------
+  # spin up a worktree for a new branch, default sibling dir:
+  #   ~/code/neo4j-cloud-fix-billing  (keeps devenv.local, venv, node_modules)
+  gwt fix-billing
+
+  # base the new branch on 'main' instead of the current HEAD:
+  gwt --from main fix-billing
+
+  # branch with slashes -> the default dir uses '-' (fix/foo -> repo-fix-foo)
+  gwt fix/foo
+
+  # attach an existing branch that isn't checked out anywhere else:
+  gwt existing-branch
+
+  # choose the destination explicitly:
+  gwt fix-billing ~/code/wt/fix-billing
+
+  # see what would be copied without creating anything:
+  gwt -n fix-billing
+
+  # run from anywhere inside the repo (subdirs work too):
+  cd components/console-api && gwt console-fix
+
+  # check the result:
+  git worktree list
+EOF
+}
+
+repo_top="$(git rev-parse --show-toplevel 2>/dev/null)" || { echo "gwt: not inside a git repo" >&2; exit 1; }
+repo_name="$(basename "$repo_top")"
+
+from="HEAD"
+dest=""
+dry_run=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --from) from="${2:-}"; shift 2 ;;
+    -n|--dry-run) dry_run=1; shift ;;
+    -h|--help) usage; exit 0 ;;
+    --) shift; break ;;
+    -*) echo "gwt: unknown option: $1" >&2; usage; exit 1 ;;
+    *) break ;;
+  esac
+done
+
+branch="${1:-}"
+[[ -n "$branch" ]] || { usage; exit 1; }
+
+if [[ -n "${2:-}" ]]; then
+  dest="$2"
+else
+  safe="$(printf '%s' "$branch" | tr '/' '-')"
+  dest="${repo_top%/*}/${repo_name}-${safe}"
+fi
+
+# Refuse to touch an existing non-empty destination.
+if [[ -e "$dest" ]] && [[ -n "$(ls -A "$dest" 2>/dev/null)" ]]; then
+  echo "gwt: destination '$dest' exists and is not empty; refusing." >&2
+  echo "     pass a nonexistent or empty path." >&2
+  exit 1
+fi
+
+# Everything untracked (ignored + non-ignored), excluding .git and tracked files.
+list="$(mktemp)"
+trap 'rm -f "$list"' EXIT
+{
+  git -C "$repo_top" ls-files -z --others --exclude-standard
+  git -C "$repo_top" ls-files -z --others --ignored --exclude-standard
+} | grep -zv '^\.git/' | LC_ALL=C sort -zu > "$list"
+
+if [[ "$dry_run" -eq 1 ]]; then
+  echo "gwt: branch : $branch (from $from)"
+  echo "gwt: dest   : $dest"
+  echo "gwt: would copy $(grep -cz . "$list" 2>/dev/null || true) file(s):"
+  tr '\0' '\n' < "$list"
+  exit 0
+fi
+
+if git -C "$repo_top" rev-parse --verify --quiet "refs/heads/$branch" >/dev/null; then
+  echo "gwt: attaching existing branch '$branch' at $dest"
+  git -C "$repo_top" worktree add "$dest" "$branch"
+else
+  echo "gwt: creating worktree '$branch' at $dest (from $from)"
+  git -C "$repo_top" worktree add -b "$branch" "$dest" "$from"
+fi
+
+count="$(grep -cz . "$list" 2>/dev/null || true)"
+if [[ "$count" -gt 0 ]]; then
+  echo "gwt: copying $count local file(s)..."
+  ( cd "$repo_top" && rsync -a --files-from="$list" --from0 ./ "$dest/" )
+fi
+
+echo "gwt: done -> $dest"

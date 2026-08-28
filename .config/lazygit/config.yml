@@ -1,30 +1,29 @@
 gui:
-  # Mirrors what snacks.nvim generates from the onedark-light colorscheme, so
-  # standalone lazygit matches lazygit-in-nvim. Default selectedLineBgColor is
-  # [blue], which makes diff red/green unreadable.
+  # Solarized Light palette so lazygit matches the rest of the stack.
+  # Default selectedLineBgColor is [blue], which makes diff red/green unreadable.
   theme:
     selectedLineBgColor:
-      - "#dcdcdc" # Visual (onedark light bg3)
+      - "#eee8d5" # base2
     inactiveViewSelectedLineBgColor:
-      - "#e6e6e6" # onedark light bg2
+      - "#eee8d5" # base2
     activeBorderColor:
-      - "#4078f2" # onedark light blue
+      - "#268bd2" # blue
       - bold
     inactiveBorderColor:
-      - "#a0a1a7" # onedark light grey
+      - "#93a1a1" # base1
     searchingActiveBorderColor:
-      - "#4078f2"
+      - "#b58900" # yellow
       - bold
     optionsTextColor:
-      - "#4078f2"
+      - "#268bd2" # blue
     unstagedChangesColor:
-      - "#e45649" # onedark light red
+      - "#dc322f" # red
     cherryPickedCommitFgColor:
-      - "#a626a4" # onedark light purple
+      - "#6c71c4" # violet
     cherryPickedCommitBgColor:
-      - "#dcdcdc"
+      - "#eee8d5" # base2
     markedBaseCommitBgColor:
-      - "#e2c792" # onedark light bg_yellow
+      - "#b58900" # yellow
 
 git:
   mainBranches:

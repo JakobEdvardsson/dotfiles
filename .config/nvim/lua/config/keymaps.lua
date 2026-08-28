@@ -74,14 +74,36 @@ local function open_file_from_head()
   vim.bo[head_buf].readonly = true
 end
 
--- Move to window
+-- Move between windows, crossing into herdr panes at a split edge.
+-- ctrl+arrows are bound globally in herdr (vim-herdr-navigation), which injects
+-- ctrl+h/j/k/l into a focused Neovim pane, so both chord sets are mapped here.
+local function nav(wincmd, dir)
+  local prev = vim.api.nvim_get_current_win()
+  vim.cmd("wincmd " .. wincmd)
+  if vim.api.nvim_get_current_win() ~= prev then
+    return -- moved within Neovim
+  end
+  -- At a split edge: cross into the surrounding herdr pane.
+  if vim.env.HERDR_PANE_ID and vim.env.HERDR_PANE_ID ~= "" then
+    local herdr = vim.env.HERDR_BIN_PATH
+    if herdr == nil or herdr == "" then
+      herdr = "herdr"
+    end
+    vim.fn.system({ herdr, "pane", "focus", "--direction", dir, "--pane", vim.env.HERDR_PANE_ID })
+  end
+end
+
 for _, key in ipairs({ "<C-Up>", "<C-Down>", "<C-Left>", "<C-Right>" }) do
   pcall(vim.keymap.del, "n", key)
 end
-map("n", "<C-Left>", "<C-w>h", { noremap = true, silent = true })
-map("n", "<C-Down>", "<C-w>j", { noremap = true, silent = true })
-map("n", "<C-Up>", "<C-w>k", { noremap = true, silent = true })
-map("n", "<C-Right>", "<C-w>l", { noremap = true, silent = true })
+map("n", "<C-Left>", function() nav("h", "left") end, { noremap = true, silent = true })
+map("n", "<C-Down>", function() nav("j", "down") end, { noremap = true, silent = true })
+map("n", "<C-Up>", function() nav("k", "up") end, { noremap = true, silent = true })
+map("n", "<C-Right>", function() nav("l", "right") end, { noremap = true, silent = true })
+map("n", "<C-h>", function() nav("h", "left") end, { noremap = true, silent = true })
+map("n", "<C-j>", function() nav("j", "down") end, { noremap = true, silent = true })
+map("n", "<C-k>", function() nav("k", "up") end, { noremap = true, silent = true })
+map("n", "<C-l>", function() nav("l", "right") end, { noremap = true, silent = true })
 
 map("n", "<C-S-Up>", ":resize +2<CR>", { noremap = true, silent = true })
 map("n", "<C-S-Down>", ":resize -2<CR>", { noremap = true, silent = true })

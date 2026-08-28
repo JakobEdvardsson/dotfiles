@@ -3,7 +3,13 @@
   "lsp": true,
   "permission": {
     "incidentio_*": "deny",
-    "linear_*": "deny"
+    "linear_*": "deny",
+    "*": "allow",
+    "external_directory": {
+      "~/code/**": "allow",
+      "~/dotfiles/**": "allow",
+      "/tmp/**": "allow"
+    }
   },
   "mcp": {
     "linear": {
