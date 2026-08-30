@@ -1,0 +1,8 @@
+#!/bin/bash
+if systemctl --user is-active --quiet kanata; then
+  systemctl --user stop kanata
+  notify-send -a kanata "Kanata OFF" "Keyboard: plain Swedish (QWERTY)" 2>/dev/null
+else
+  systemctl --user start kanata
+  notify-send -a kanata "Kanata ON" "Colemak-DH + Space-nav active" 2>/dev/null
+fi
