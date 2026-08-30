@@ -7,14 +7,22 @@
 
 (defcfg
   process-unmapped-keys yes
+  concurrent-tap-hold yes
   linux-dev-names-include ("AT Translated Set 2 keyboard")
+)
+
+;; combo: hold J+K (letters n+e) together = Backspace, like your
+;; Moonlander's N+E = Del combo. Activates only when both are held
+;; within 150ms; otherwise the letters type normally.
+(defchordsv2
+  (j k) bspc 150 first-release ()
 )
 
 (defsrc)
 
 (deflayermap (base)
   caps bspc
-  spc  (tap-hold 150 250 spc (layer-while-held nav))
+  spc  (tap-hold 200 300 spc (layer-while-held nav))
 
   ;; top row: q w f p b | j l u y ö
   e f
