@@ -15,7 +15,7 @@
 ;; Moonlander's N+E = Del combo. Activates only when both are held
 ;; within 150ms; otherwise the letters type normally.
 (defchordsv2
-  (j k) bspc 150 first-release ()
+  (j k) bspc 150 first-release (nav)
 )
 
 (defsrc)
@@ -53,8 +53,8 @@
 )
 
 (deflayermap (nav)
-  h left
-  j down
-  k up
-  l right
+  j left
+  k down
+  l up
+  scln right
 )
