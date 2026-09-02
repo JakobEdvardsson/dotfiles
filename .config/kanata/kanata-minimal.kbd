@@ -8,6 +8,7 @@
 (defcfg
   process-unmapped-keys yes
   concurrent-tap-hold yes
+  chords-v2-min-idle 150
   linux-dev-names-include ("AT Translated Set 2 keyboard")
 )
 
@@ -15,7 +16,7 @@
 ;; Moonlander's N+E = Del combo. Activates only when both are held
 ;; within 150ms; otherwise the letters type normally.
 (defchordsv2
-  (j k) bspc 150 first-release (nav)
+  (j k) bspc 100 first-release (nav)
 )
 
 (defsrc)
