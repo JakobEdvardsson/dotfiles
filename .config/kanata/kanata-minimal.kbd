@@ -36,15 +36,15 @@
   p scln
 
   ;; home row: a r s t g | m n e i o  (tap letter / hold modifier)
-  a (tap-hold 200 200 a lmet)
-  s (tap-hold 200 200 r lalt)
-  d (tap-hold 200 200 s lctl)
-  f (tap-hold 200 200 t lsft)
+  a (tap-hold 300 300 a lmet)
+  s (tap-hold 300 300 r lalt)
+  d (tap-hold 300 300 s lctl)
+  f (tap-hold 300 300 t lsft)
   h m
-  j (tap-hold 200 200 n lsft)
-  k (tap-hold 200 200 e lctl)
-  l (tap-hold 200 200 i lalt)
-  scln (tap-hold 200 200 o lmet)   ;; physical ö key: tap = o, hold = GUI
+  j (tap-hold 300 300 n lsft)
+  k (tap-hold 300 300 e lctl)
+  l (tap-hold 300 300 i lalt)
+  scln (tap-hold 300 300 o lmet)   ;; physical ö key: tap = o, hold = GUI
 
   ;; bottom row: z x c d v k h
   v d
