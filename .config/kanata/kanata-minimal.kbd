@@ -31,8 +31,7 @@
 (deflayermap (colemak)
   grv @cm-off
 
-  caps bspc
-  spc  (tap-hold 200 300 spc (layer-while-held nav))
+  caps (tap-hold 200 300 bspc (layer-while-held nav))
 
   ;; top row: q w f p b | j l u y ö
   e f
@@ -69,8 +68,9 @@
   scln right
 )
 
-;; n+e (hold J+K) = Backspace, Moonlander-style.
+;; n+e (hold J+K) = Backspace, s+t (hold D+F) = Tab — Moonlander combos.
 ;; Disabled in qwerty (letters differ there) and nav layers.
 (defchordsv2
   (j k) bspc 100 first-release (qwerty nav)
+  (d f) tab  100 first-release (qwerty nav)
 )
