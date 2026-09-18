@@ -41,9 +41,7 @@ local function open_file_from_head()
 
   local branch_result, branch_name
   for _, branch in ipairs({ "master", "main", "trunk" }) do
-    local result = vim
-      .system({ "git", "show", branch .. ":" .. relative_path }, { cwd = git_root, text = true })
-      :wait()
+    local result = vim.system({ "git", "show", branch .. ":" .. relative_path }, { cwd = git_root, text = true }):wait()
     if result.code == 0 then
       branch_result = result
       branch_name = branch
@@ -74,36 +72,71 @@ local function open_file_from_head()
   vim.bo[head_buf].readonly = true
 end
 
--- Move between windows, crossing into herdr panes at a split edge.
--- ctrl+arrows are bound globally in herdr (vim-herdr-navigation), which injects
--- ctrl+h/j/k/l into a focused Neovim pane, so both chord sets are mapped here.
-local function nav(wincmd, dir)
-  local prev = vim.api.nvim_get_current_win()
-  vim.cmd("wincmd " .. wincmd)
-  if vim.api.nvim_get_current_win() ~= prev then
-    return -- moved within Neovim
-  end
-  -- At a split edge: cross into the surrounding herdr pane.
-  if vim.env.HERDR_PANE_ID and vim.env.HERDR_PANE_ID ~= "" then
-    local herdr = vim.env.HERDR_BIN_PATH
-    if herdr == nil or herdr == "" then
-      herdr = "herdr"
-    end
-    vim.fn.system({ herdr, "pane", "focus", "--direction", dir, "--pane", vim.env.HERDR_PANE_ID })
-  end
-end
-
 for _, key in ipairs({ "<C-Up>", "<C-Down>", "<C-Left>", "<C-Right>" }) do
   pcall(vim.keymap.del, "n", key)
 end
-map("n", "<C-Left>", function() nav("h", "left") end, { noremap = true, silent = true })
-map("n", "<C-Down>", function() nav("j", "down") end, { noremap = true, silent = true })
-map("n", "<C-Up>", function() nav("k", "up") end, { noremap = true, silent = true })
-map("n", "<C-Right>", function() nav("l", "right") end, { noremap = true, silent = true })
-map("n", "<C-h>", function() nav("h", "left") end, { noremap = true, silent = true })
-map("n", "<C-j>", function() nav("j", "down") end, { noremap = true, silent = true })
-map("n", "<C-k>", function() nav("k", "up") end, { noremap = true, silent = true })
-map("n", "<C-l>", function() nav("l", "right") end, { noremap = true, silent = true })
+-- Ctrl+Left/Right: jump words, like the shell (insert mode does this natively).
+map("n", "<C-Left>", "b", { noremap = true, silent = true })
+map("n", "<C-Right>", "w", { noremap = true, silent = true })
+
+-- Reviewr-style: select code, press "<leader>sa". It pastes the selection into the
+-- agent's input and jumps focus to the agent so you can add context and press
+-- Enter. Non-leader key to avoid clashing with LazyVim's <leader>s search group.
+local function send_selection_to_agent()
+  local herdr = vim.env.HERDR_BIN_PATH
+  if herdr == nil or herdr == "" then
+    herdr = "herdr"
+  end
+  local pane = vim.env.HERDR_PANE_ID
+  if not pane or pane == "" then
+    vim.notify("herdr: not in a herdr pane", vim.log.levels.WARN)
+    return
+  end
+  local ws = vim.fn.matchstr(pane, "^[^:]*")
+  local out = vim.fn.system({ herdr, "agent", "list" })
+  if vim.v.shell_error ~= 0 then
+    vim.notify("herdr: agent list failed: " .. out, vim.log.levels.ERROR)
+    return
+  end
+  local ok, data = pcall(vim.fn.json_decode, out)
+  if not ok or not data or not data.result or not data.result.agents then
+    vim.notify("herdr: could not parse agent list", vim.log.levels.ERROR)
+    return
+  end
+  local target
+  for _, a in ipairs(data.result.agents) do
+    if a.workspace_id == ws then
+      target = a.pane_id
+      break
+    end
+  end
+  if not target then
+    vim.notify("herdr: no agent in workspace " .. ws, vim.log.levels.WARN)
+    return
+  end
+  local l1, l2 = vim.fn.line("v"), vim.fn.line(".") -- selection ends, capture before leaving visual mode
+  vim.cmd('silent normal! "vy') -- yank selection into register v
+  local text = vim.fn.getreg("v")
+  if text == nil or text == "" then
+    vim.notify("herdr: empty selection", vim.log.levels.WARN)
+    return
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false) -- leave visual mode
+  local file = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.")
+  if file == "" then
+    file = "[no name]"
+  end
+  text = string.format("Selection from %s:%d-%d:\n\n%s", file, math.min(l1, l2), math.max(l1, l2), text)
+  text = text:gsub("[\r\n]+$", "") -- don't let a trailing newline submit it
+  local res = vim.fn.system({ herdr, "pane", "send-text", target, text })
+  if vim.v.shell_error ~= 0 then
+    vim.notify("herdr: send failed: " .. res, vim.log.levels.ERROR)
+    return
+  end
+  vim.fn.system({ herdr, "agent", "focus", target }) -- jump to the agent
+  vim.notify("sent selection to agent", vim.log.levels.INFO)
+end
+map("v", "<leader>sa", send_selection_to_agent, { desc = "Send selection to agent and focus it" })
 
 map("n", "<C-S-Up>", ":resize +2<CR>", { noremap = true, silent = true })
 map("n", "<C-S-Down>", ":resize -2<CR>", { noremap = true, silent = true })
@@ -135,6 +168,17 @@ map("x", "s", require("substitute").visual, { noremap = true })
 map("x", "ga", function()
   require("gitsigns").stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 end, { desc = "Git add selection" })
+map("n", "ga", function()
+  require("gitsigns").stage_hunk({ vim.fn.line("."), vim.fn.line(".") })
+end, { desc = "Git add current line" })
+
+-- Jump between unstaged hunks (working tree vs index, i.e. not yet git added)
+map("n", "]g", function()
+  require("gitsigns").nav_hunk("next", { target = "unstaged" })
+end, { desc = "Next unstaged git change" })
+map("n", "[g", function()
+  require("gitsigns").nav_hunk("prev", { target = "unstaged" })
+end, { desc = "Previous unstaged git change" })
 
 -- Terminal Mappings
 map("t", "<C-\\>", "<cmd>close<cr>", { desc = "Hide Terminal" })

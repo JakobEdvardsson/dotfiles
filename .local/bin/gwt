@@ -15,11 +15,12 @@ usage: gwt [--from <ref>] [-n|--dry-run] <branch> [<dest>]
 Create a git worktree for <branch> and copy your local (ignored/untracked)
 files from the current repo into it, so you don't rebuild everything.
 
-  --from <ref>   base the new branch on <ref> (default: current HEAD)
-  -n, --dry-run  print what would be copied without creating anything
-  <branch>       new branch name (worktree is created with -b <branch>)
-  <dest>         destination dir (default: sibling of the repo root, named
-                 <repo>-<branch>)
+  --from <ref>      base the new branch on <ref> (default: current HEAD)
+  -n, --dry-run     print what would be copied without creating anything
+  --print-dest      print the destination path and exit (for wrappers)
+  <branch>          new branch name (worktree is created with -b <branch>)
+  <dest>            destination dir (default: sibling of the repo root, named
+                    <repo>-<branch>)
 
 Only untracked files are copied (ignored caches/build outputs AND plain
 untracked files like devenv.local). Tracked files and all .git metadata are
@@ -37,7 +38,8 @@ examples
   # branch with slashes -> the default dir uses '-' (fix/foo -> repo-fix-foo)
   gwt fix/foo
 
-  # attach an existing branch that isn't checked out anywhere else:
+  # attach an existing branch, stealing it from whichever worktree
+  # currently holds it (that worktree ends up detached):
   gwt existing-branch
 
   # choose the destination explicitly:
@@ -48,6 +50,10 @@ examples
 
   # run from anywhere inside the repo (subdirs work too):
   cd components/console-api && gwt console-fix
+
+  # re-running an interrupted gwt is safe: if <dest> is already a worktree
+  # on <branch>, setup is skipped and the local-file copy just resumes:
+  gwt fix-billing
 
   # check the result:
   git worktree list
@@ -60,10 +66,12 @@ repo_name="$(basename "$repo_top")"
 from="HEAD"
 dest=""
 dry_run=0
+print_dest=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --from) from="${2:-}"; shift 2 ;;
     -n|--dry-run) dry_run=1; shift ;;
+    --print-dest) print_dest=1; shift ;;
     -h|--help) usage; exit 0 ;;
     --) shift; break ;;
     -*) echo "gwt: unknown option: $1" >&2; usage; exit 1 ;;
@@ -81,20 +89,40 @@ else
   dest="${repo_top%/*}/${repo_name}-${safe}"
 fi
 
-# Refuse to touch an existing non-empty destination.
-if [[ -e "$dest" ]] && [[ -n "$(ls -A "$dest" 2>/dev/null)" ]]; then
-  echo "gwt: destination '$dest' exists and is not empty; refusing." >&2
-  echo "     pass a nonexistent or empty path." >&2
-  exit 1
+if [[ "$print_dest" -eq 1 ]]; then
+  printf '%s\n' "$dest"
+  exit 0
 fi
 
-# Everything untracked (ignored + non-ignored), excluding .git and tracked files.
+# An existing non-empty destination is only ok if it is already a worktree
+# of this repo on <branch> - then setup is skipped and the copy resumes.
+resume=0
+if [[ -e "$dest" ]]; then
+  wt_branch="$(git -C "$repo_top" worktree list --porcelain | awk -v want="$(realpath "$dest")" '
+    /^worktree / { wt = substr($0, 10) }
+    wt == want && /^branch / { print substr($0, 8); exit }
+    wt == want && /^detached/ { print "DETACHED"; exit }
+  ')"
+  if [[ -n "$wt_branch" && "$wt_branch" != "refs/heads/$branch" ]]; then
+    echo "gwt: '$dest' is already a worktree on '${wt_branch#refs/heads/}'; refusing." >&2
+    exit 1
+  fi
+  if [[ -z "$wt_branch" && -n "$(ls -A "$dest" 2>/dev/null)" ]]; then
+    echo "gwt: destination '$dest' exists and is not empty; refusing." >&2
+    echo "     pass a nonexistent or empty path." >&2
+    exit 1
+  fi
+  [[ -n "$wt_branch" ]] && resume=1
+fi
+
 list="$(mktemp)"
 trap 'rm -f "$list"' EXIT
+# Everything untracked (ignored + non-ignored), excluding .git and tracked files.
+# grep exits 1 when nothing matches (e.g. no untracked files) - that's fine.
 {
   git -C "$repo_top" ls-files -z --others --exclude-standard
   git -C "$repo_top" ls-files -z --others --ignored --exclude-standard
-} | grep -zv '^\.git/' | LC_ALL=C sort -zu > "$list"
+} | grep -zv '^\.git/' | LC_ALL=C sort -zu > "$list" || true
 
 if [[ "$dry_run" -eq 1 ]]; then
   echo "gwt: branch : $branch (from $from)"
@@ -104,7 +132,17 @@ if [[ "$dry_run" -eq 1 ]]; then
   exit 0
 fi
 
-if git -C "$repo_top" rev-parse --verify --quiet "refs/heads/$branch" >/dev/null; then
+if [[ "$resume" -eq 1 ]]; then
+  echo "gwt: '$branch' is already checked out at $dest; resuming"
+elif git -C "$repo_top" rev-parse --verify --quiet "refs/heads/$branch" >/dev/null; then
+  holder="$(git -C "$repo_top" worktree list --porcelain | awk -v want="refs/heads/$branch" '
+    /^worktree / { path = substr($0, 10) }
+    $0 == "branch " want { print path; exit }
+  ')"
+  if [[ -n "$holder" ]]; then
+    echo "gwt: branch '$branch' is checked out at $holder; detaching it"
+    git -C "$holder" checkout --detach --quiet
+  fi
   echo "gwt: attaching existing branch '$branch' at $dest"
   git -C "$repo_top" worktree add "$dest" "$branch"
 else
@@ -115,7 +153,11 @@ fi
 count="$(grep -cz . "$list" 2>/dev/null || true)"
 if [[ "$count" -gt 0 ]]; then
   echo "gwt: copying $count local file(s)..."
-  ( cd "$repo_top" && rsync -a --files-from="$list" --from0 ./ "$dest/" )
+  if [[ -t 1 ]]; then
+    ( cd "$repo_top" && rsync -a --info=progress2 --files-from="$list" --from0 ./ "$dest/" )
+  else
+    ( cd "$repo_top" && rsync -a --files-from="$list" --from0 ./ "$dest/" )
+  fi
 fi
 
 echo "gwt: done -> $dest"

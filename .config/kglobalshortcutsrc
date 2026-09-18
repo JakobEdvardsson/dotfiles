@@ -6,6 +6,9 @@ switch-to-activity-f300a4e4-85ac-4bb9-8527-cefa52d71ea4=none,none,Switch to acti
 switch-to-activity-f8f9a03b-1ce2-4e1d-9eb4-48ca8d7a607e=none,none,Switch to activity "Default"
 
 [KDE Keyboard Layout Switcher]
+Switch keyboard layout to Colemak DH=none,none,Switch keyboard layout to Colemak DH
+Switch keyboard layout to Swedish=none,none,Switch keyboard layout to Swedish
+Switch keyboard layout to Swedish (Colemak)=none,none,Switch keyboard layout to Swedish (Colemak)
 Switch to Last-Used Keyboard Layout=Meta+Alt+L,Meta+Alt+L,Switch to Last-Used Keyboard Layout
 Switch to Next Keyboard Layout=Meta+Alt+K,Meta+Alt+K,Switch to Next Keyboard Layout
 _k_friendly_name=Keyboard Layout Switcher

@@ -21,6 +21,12 @@ return {
             editInTerminal = false,
           },
         },
+        win = {
+          keys = {
+            -- Hide lazygit instead of terminating it, preserving its current view.
+            term_normal = { "q", function(self) self:hide() end, mode = "t" },
+          },
+        },
       })
 
       return opts

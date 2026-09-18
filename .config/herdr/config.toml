@@ -6,6 +6,14 @@ name = "solarized-light"
 [ui.toast]
 delivery = "herdr"
 
+[ui.sidebar.agents]
+rows = [
+  ["state_icon", "workspace", "tab"],
+  ["machine"],
+  ["$desc1"],
+  ["$desc2"],
+]
+
 [keys]
 prefix = "ctrl+t"
 focus_pane_left = ["prefix+h", "prefix+left"]
@@ -28,28 +36,3 @@ key = "prefix+r"
 type = "plugin_action"
 command = "persiyanov.reviewr.toggle"
 description = "reviewr: toggle pane"
-
-# vim-herdr-navigation: ctrl+arrows move between herdr panes and Neovim splits
-[[keys.command]]
-key = "ctrl+left"
-type = "plugin_action"
-command = "vim-herdr-navigation.left"
-description = "navigate left (vim/herdr)"
-
-[[keys.command]]
-key = "ctrl+right"
-type = "plugin_action"
-command = "vim-herdr-navigation.right"
-description = "navigate right (vim/herdr)"
-
-[[keys.command]]
-key = "ctrl+up"
-type = "plugin_action"
-command = "vim-herdr-navigation.up"
-description = "navigate up (vim/herdr)"
-
-[[keys.command]]
-key = "ctrl+down"
-type = "plugin_action"
-command = "vim-herdr-navigation.down"
-description = "navigate down (vim/herdr)"
