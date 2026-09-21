@@ -1,6 +1,4 @@
 --ignore='^\.git$'
 --ignore='^README.md'
---ignore='^dnf-packages.txt'
---ignore='^setup.sh'
 --ignore='^.stowrc'
 --ignore='^notes.md'
