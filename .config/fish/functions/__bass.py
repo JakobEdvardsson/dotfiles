@@ -12,6 +12,7 @@ from __future__ import print_function
 import json
 import os
 import signal
+import string
 import subprocess
 import sys
 import traceback
@@ -40,9 +41,29 @@ def ignored(name):
         return True
     return False
 
-def escape(string):
-    # use json.dumps to reliably escape quotes and backslashes
-    return json.dumps(string).replace(r'$', r'\$')
+_FISH_SAFE = set(string.ascii_letters + string.digits)
+
+def escape(s):
+    # Emit an unquoted, fish-safe token instead of a double-quoted json.dumps
+    # string. fish does not interpret "\n" inside double quotes, so real
+    # newlines (PEM keys, wrapped base64, etc.) were silently turned into the
+    # literal two characters "\n" when an environment was sourced through bass.
+    # Unquoted fish strings do decode "\n"/"\t"/"\r", which lets us round-trip
+    # both real newlines and pre-existing literal backslash escapes (e.g. the
+    # "\n" inside JSON service-account keys).
+    if not s:
+        return "''"
+    out = []
+    for ch in s:
+        if ch == '\n':
+            out.append('\\n')
+        elif ch == '\t':
+            out.append('\\t')
+        elif ch == '\r':
+            out.append('\\r')
+        else:
+            out.append(ch if ch in _FISH_SAFE else '\\' + ch)
+    return ''.join(out)
 
 def escape_identifier(word):
     return escape(word.replace('?', '\\?'))

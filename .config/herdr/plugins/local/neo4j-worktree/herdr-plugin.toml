@@ -1,0 +1,22 @@
+id = "local.neo4j-worktree"
+name = "neo4j-cloud worktree"
+version = "0.1.0"
+min_herdr_version = "0.9.0"
+description = "Delete the current workspace's git worktree checkout from the Spaces menu"
+platforms = ["linux", "macos"]
+
+# Adds "Delete worktree" to the workspace (Spaces) right-click menu.
+[[actions]]
+id = "delete"
+title = "Delete worktree"
+contexts = ["workspace"]
+command = ["sh", "delete-action.sh"]
+
+# Confirmation popup opened by the action above.
+[[panes]]
+id = "confirm-delete"
+title = "Delete worktree"
+placement = "popup"
+width = "70%"
+height = 12
+command = ["sh", "delete-confirm.sh"]

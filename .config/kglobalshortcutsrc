@@ -314,6 +314,7 @@ _launch=Meta+.\tMeta+Shift+E\tMeta+Ctrl+Alt+Shift+Space
 
 [services][org.kde.spectacle.desktop]
 RecordRegion=Meta+R
+RecordScreen=none
 
 [services][org.kde.touchpadshortcuts.desktop]
 ToggleTouchpad=Touchpad Toggle\tMeta+Ctrl+Zenkaku Hankaku

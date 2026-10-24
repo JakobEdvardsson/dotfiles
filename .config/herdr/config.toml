@@ -18,10 +18,10 @@ rows = [
 prefix = "ctrl+t"
 focus_pane_left = ["prefix+h", "prefix+left"]
 focus_pane_down = ["prefix+j", "prefix+down"]
-focus_pane_up = ["prefix+k", "prefix+up"]
+focus_pane_up = "prefix+up"
 focus_pane_right = ["prefix+l", "prefix+right"]
 previous_tab = ["prefix+p", "alt+left"]
-next_tab = ["prefix+n", "alt+right"]
+next_tab = "alt+right"
 previous_workspace = "alt+up"
 next_workspace = "alt+down"
 last_pane = "prefix+;"
@@ -30,9 +30,55 @@ next_agent = ["alt+j", "alt+e"]
 open_worktree = "prefix+t"
 close_workspace = "prefix+shift+d"
 resize_mode = "prefix+shift+r"
+rename_tab = "prefix+r"
+goto = "prefix+alt+g"
 
 [[keys.command]]
-key = "prefix+r"
-type = "plugin_action"
-command = "persiyanov.reviewr.toggle"
-description = "reviewr: toggle pane"
+key = "prefix+a"
+type = "shell"
+command = "sh ~/.config/herdr/opencode-tab.sh"
+description = "new tab running opencode"
+
+[[keys.command]]
+key = "prefix+shift+a"
+type = "shell"
+command = "sh ~/.config/herdr/devenv-tab.sh"
+description = "new tab running devenv"
+
+[[keys.command]]
+key = "prefix+n"
+type = "shell"
+command = "sh ~/.config/herdr/nvim-tab.sh"
+description = "new tab running nvim"
+
+[[keys.command]]
+key = "prefix+k"
+type = "shell"
+command = "sh ~/.config/herdr/k9s-tab.sh"
+description = "new tab running k9s"
+
+[[keys.command]]
+key = "prefix+d"
+type = "shell"
+command = "sh ~/.config/herdr/neo4j-cloud-tab.sh"
+description = "new tab for neo4j-cloud"
+
+[[keys.command]]
+key = "prefix+shift+t"
+type = "popup"
+command = "sh ~/.config/herdr/new-worktree.sh"
+description = "new neo4j-cloud worktree workspace"
+width = "60%"
+height = "25%"
+
+[[keys.command]]
+key = "prefix+g"
+type = "shell"
+command = "sh ~/.config/herdr/tui-toggle.sh lazygit lazygit"
+description = "toggle lazygit tab (keeps state)"
+
+[[keys.command]]
+key = "prefix+shift+c"
+type = "shell"
+command = "sh ~/.config/herdr/tui-toggle.sh tuicr tuicr tui"
+description = "toggle tuicr tab (keeps state)"

@@ -4,8 +4,11 @@
 # have to rebuild everything (node_modules, venv, caches, devenv.local, ...).
 #
 # Copies every untracked file (ignored AND non-ignored) from the current repo
-# into the new worktree, but never tracked files or any .git metadata, so the
-# new worktree's tracked content always matches the target branch.
+# into the new worktree, but never .git metadata or anything tracked by the
+# target ref, so the worktree's tracked content always matches its branch.
+#
+# If <branch> is already checked out in a worktree, that worktree is reused
+# (nothing is created, detached or copied).
 set -euo pipefail
 
 usage() {
@@ -23,8 +26,12 @@ files from the current repo into it, so you don't rebuild everything.
                     <repo>-<branch>)
 
 Only untracked files are copied (ignored caches/build outputs AND plain
-untracked files like devenv.local). Tracked files and all .git metadata are
-left alone, so the worktree's tracked content matches the target branch.
+untracked files like devenv.local). All .git metadata is left alone, and any
+path tracked by the target ref is skipped even if it is untracked here, so the
+worktree's tracked content always matches its branch.
+
+If <branch> is already checked out in another worktree, gwt reuses that
+worktree instead of creating a duplicate and detaching the existing one.
 
 examples
 --------
@@ -38,8 +45,8 @@ examples
   # branch with slashes -> the default dir uses '-' (fix/foo -> repo-fix-foo)
   gwt fix/foo
 
-  # attach an existing branch, stealing it from whichever worktree
-  # currently holds it (that worktree ends up detached):
+  # reuse an existing branch. if it is already checked out in a worktree,
+  # gwt points you at that worktree instead of creating a duplicate:
   gwt existing-branch
 
   # choose the destination explicitly:
@@ -62,6 +69,14 @@ EOF
 
 repo_top="$(git rev-parse --show-toplevel 2>/dev/null)" || { echo "gwt: not inside a git repo" >&2; exit 1; }
 repo_name="$(basename "$repo_top")"
+
+# Print the worktree path where <branch> is currently checked out, if any.
+worktree_for_branch() {
+  git -C "$repo_top" worktree list --porcelain | awk -v want="refs/heads/$1" '
+    /^worktree / { path = substr($0, 10) }
+    $0 == "branch " want { print path; exit }
+  '
+}
 
 from="HEAD"
 dest=""
@@ -89,9 +104,30 @@ else
   dest="${repo_top%/*}/${repo_name}-${safe}"
 fi
 
+holder="$(worktree_for_branch "$branch")"
+
 if [[ "$print_dest" -eq 1 ]]; then
-  printf '%s\n' "$dest"
+  if [[ -n "$holder" ]]; then
+    printf '%s\n' "$holder"
+  else
+    printf '%s\n' "$dest"
+  fi
   exit 0
+fi
+
+# If the branch is already checked out somewhere, reuse that worktree rather
+# than creating a duplicate and detaching the existing one. The exception is
+# when it is already at our destination, handled as a resume below so an
+# interrupted copy can finish.
+if [[ -n "$holder" ]]; then
+  holder_real="$(realpath "$holder")"
+  dest_real=""
+  [[ -e "$dest" ]] && dest_real="$(realpath "$dest")"
+  if [[ "$holder_real" != "$dest_real" ]]; then
+    echo "gwt: '$branch' is already checked out at $holder; reusing"
+    echo "gwt: done -> $holder"
+    exit 0
+  fi
 fi
 
 # An existing non-empty destination is only ok if it is already a worktree
@@ -116,13 +152,27 @@ if [[ -e "$dest" ]]; then
 fi
 
 list="$(mktemp)"
-trap 'rm -f "$list"' EXIT
+tracked="$(mktemp)"
+safe_list="$(mktemp)"
+trap 'rm -f "$list" "$tracked" "$safe_list"' EXIT
 # Everything untracked (ignored + non-ignored), excluding .git and tracked files.
 # grep exits 1 when nothing matches (e.g. no untracked files) - that's fine.
 {
   git -C "$repo_top" ls-files -z --others --exclude-standard
   git -C "$repo_top" ls-files -z --others --ignored --exclude-standard
 } | grep -zv '^\.git/' | LC_ALL=C sort -zu > "$list" || true
+
+# A path untracked here may still be tracked on the target ref (the existing
+# branch, or the base of a new one). Never copy those - rsync would clobber the
+# worktree's tracked content.
+if git -C "$repo_top" rev-parse --verify --quiet "refs/heads/$branch" >/dev/null; then
+  target_ref="refs/heads/$branch"
+else
+  target_ref="$from"
+fi
+git -C "$repo_top" ls-tree -r -z --name-only "$target_ref" | LC_ALL=C sort -zu > "$tracked"
+LC_ALL=C comm -z -23 "$list" "$tracked" > "$safe_list"
+list="$safe_list"
 
 if [[ "$dry_run" -eq 1 ]]; then
   echo "gwt: branch : $branch (from $from)"
@@ -135,14 +185,6 @@ fi
 if [[ "$resume" -eq 1 ]]; then
   echo "gwt: '$branch' is already checked out at $dest; resuming"
 elif git -C "$repo_top" rev-parse --verify --quiet "refs/heads/$branch" >/dev/null; then
-  holder="$(git -C "$repo_top" worktree list --porcelain | awk -v want="refs/heads/$branch" '
-    /^worktree / { path = substr($0, 10) }
-    $0 == "branch " want { print path; exit }
-  ')"
-  if [[ -n "$holder" ]]; then
-    echo "gwt: branch '$branch' is checked out at $holder; detaching it"
-    git -C "$holder" checkout --detach --quiet
-  fi
   echo "gwt: attaching existing branch '$branch' at $dest"
   git -C "$repo_top" worktree add "$dest" "$branch"
 else

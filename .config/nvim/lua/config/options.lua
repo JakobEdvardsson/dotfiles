@@ -17,3 +17,8 @@ end
 vim.opt.wrap = true
 vim.opt.linebreak = true
 vim.opt.scrolloff = 15
+
+-- Absolute line numbers everywhere. Relative numbers make side-by-side diffs
+-- (Diffview, fugitive, ...) hard to read, since each pane's "real" line number
+-- is what you compare.
+vim.opt.relativenumber = false

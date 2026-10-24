@@ -138,10 +138,87 @@ local function send_selection_to_agent()
 end
 map("v", "<leader>sa", send_selection_to_agent, { desc = "Send selection to agent and focus it" })
 
-map("n", "<C-S-Up>", ":resize +2<CR>", { noremap = true, silent = true })
-map("n", "<C-S-Down>", ":resize -2<CR>", { noremap = true, silent = true })
-map("n", "<C-S-Left>", ":vertical resize -2<CR>", { noremap = true, silent = true })
-map("n", "<C-S-Right>", ":vertical resize +2<CR>", { noremap = true, silent = true })
+-- Jump between windows with Ctrl+Shift+Arrows.
+map("n", "<C-S-Up>", "<C-w>k", { noremap = true, silent = true, desc = "Window Up" })
+map("n", "<C-S-Down>", "<C-w>j", { noremap = true, silent = true, desc = "Window Down" })
+map("n", "<C-S-Left>", "<C-w>h", { noremap = true, silent = true, desc = "Window Left" })
+map("n", "<C-S-Right>", "<C-w>l", { noremap = true, silent = true, desc = "Window Right" })
+
+-- Resize mode: <leader>wr enters, arrows/hjkl resize, <Esc> exits.
+local resize_group = vim.api.nvim_create_augroup("ResizeMode", { clear = true })
+local resize_buf = nil
+local resize_keys = {
+  ["<Left>"] = { ":vertical resize -2<CR>", "Shrink width" },
+  ["<Right>"] = { ":vertical resize +2<CR>", "Grow width" },
+  ["<Up>"] = { ":resize -2<CR>", "Shrink height" },
+  ["<Down>"] = { ":resize +2<CR>", "Grow height" },
+  ["h"] = { ":vertical resize -2<CR>", "Shrink width" },
+  ["l"] = { ":vertical resize +2<CR>", "Grow width" },
+  ["k"] = { ":resize -2<CR>", "Shrink height" },
+  ["j"] = { ":resize +2<CR>", "Grow height" },
+}
+
+local function exit_resize_mode()
+  if not resize_buf then
+    return
+  end
+  local buf = resize_buf
+  resize_buf = nil
+  for lhs in pairs(resize_keys) do
+    pcall(vim.keymap.del, "n", lhs, { buffer = buf })
+  end
+  pcall(vim.keymap.del, "n", "<Esc>", { buffer = buf })
+  if vim.api.nvim_buf_is_valid(buf) then
+    vim.api.nvim_clear_autocmds({ group = resize_group, buffer = buf })
+  end
+  vim.notify("Resize mode off", vim.log.levels.INFO)
+end
+
+local function enter_resize_mode()
+  if resize_buf then
+    exit_resize_mode()
+    return
+  end
+  local buf = vim.api.nvim_get_current_buf()
+  resize_buf = buf
+  for lhs, spec in pairs(resize_keys) do
+    vim.keymap.set("n", lhs, spec[1], { buffer = buf, silent = true, desc = spec[2] })
+  end
+  vim.keymap.set("n", "<Esc>", exit_resize_mode, { buffer = buf, silent = true, desc = "Exit resize mode" })
+  vim.api.nvim_create_autocmd("BufLeave", {
+    group = resize_group,
+    buffer = buf,
+    once = true,
+    callback = exit_resize_mode,
+  })
+  vim.notify("Resize mode: arrows/hjkl resize, <Esc> to exit", vim.log.levels.INFO)
+end
+
+map("n", "<leader>wr", enter_resize_mode, { desc = "Resize Window (mode)" })
+
+-- <leader>e / <leader>E: focus the Snacks explorer, or close it if already focused.
+local function explorer_focus_or_close(open)
+  local picker = require("snacks").picker.get({ source = "explorer" })[1]
+  if not picker then
+    open()
+  elseif picker:is_focused() then
+    picker:close()
+  else
+    picker:focus()
+  end
+end
+
+map("n", "<leader>e", function()
+  explorer_focus_or_close(function()
+    Snacks.explorer({ cwd = LazyVim.root() })
+  end)
+end, { desc = "Explorer Snacks (root dir)" })
+
+map("n", "<leader>E", function()
+  explorer_focus_or_close(function()
+    Snacks.explorer()
+  end)
+end, { desc = "Explorer Snacks (cwd)" })
 
 map("n", "<S-Down>", "<C-e>", { noremap = true, silent = true, desc = "Scroll down one line without moving cursor" })
 map("n", "<S-Up>", "<C-y>", { noremap = true, silent = true, desc = "Scroll up one line without moving cursor" })
