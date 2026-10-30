@@ -300,12 +300,6 @@ _launch=Meta+W
 _launch=none
 new-window=Meta+Return
 
-[services][net.local.obs-record-toggle-2.desktop]
-_launch=Meta+Shift+R
-
-[services][net.local.obs-record-toggle.desktop]
-_launch=Meta+Shift+R
-
 [services][org.kde.konsole.desktop]
 _launch=none
 
@@ -313,6 +307,8 @@ _launch=none
 _launch=Meta+.\tMeta+Shift+E\tMeta+Ctrl+Alt+Shift+Space
 
 [services][org.kde.spectacle.desktop]
+CurrentMonitorScreenShot=none
+OpenWithoutScreenshot=none
 RecordRegion=Meta+R
 RecordScreen=none
 

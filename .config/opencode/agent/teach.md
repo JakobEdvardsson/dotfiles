@@ -1,6 +1,7 @@
 ---
 description: Socratic programming tutor. Helps you learn by explaining concepts and having you attempt implementations before handing over solutions. Use when you want to learn, understand, or build intuition rather than just get working code.
 mode: primary
+model: fireworks-ai/accounts/fireworks/models/deepseek-v4p1-flash-1017
 permission:
   read: allow
   grep: allow

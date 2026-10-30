@@ -1,6 +1,24 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "lsp": true,
+  "model": "fireworks-ai/accounts/fireworks/models/deepseek-v4p1-flash-1017",
+  "agents": {
+    "build": {
+      "model": "fireworks-ai/accounts/fireworks/models/deepseek-v4p1-flash-1017",
+    },
+    "plan": {
+      "model": "fireworks-ai/accounts/fireworks/models/deepseek-v4p1-flash-1017",
+    },
+    "general": {
+      "model": "fireworks-ai/accounts/fireworks/models/deepseek-v4p1-flash-1017",
+    },
+    "explore": {
+      "model": "fireworks-ai/accounts/fireworks/models/deepseek-v4p1-flash-1017",
+    },
+    "teach": {
+      "model": "fireworks-ai/accounts/fireworks/models/deepseek-v4p1-flash-1017",
+    },
+  },
   "permission": {
     "*": "allow",
     "external_directory": {

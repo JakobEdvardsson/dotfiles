@@ -27,6 +27,9 @@ if status is-interactive
     # eval (zellij setup --generate-auto-start fish | string collect)
 
     zoxide init fish | source
+    # Our `z` (functions/z.fish) wraps zoxide so a bare name prefers a directory
+    # in the current worktree over the highest-scoring checkout.
+    source $__fish_config_dir/functions/z.fish
     direnv hook fish | source
 
     # Aliases

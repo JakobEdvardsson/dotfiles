@@ -3,6 +3,9 @@ onboarding = false
 [theme]
 name = "solarized-light"
 
+[worktrees]
+directory = "~/code/worktrees"
+
 [ui.toast]
 delivery = "herdr"
 
@@ -27,6 +30,7 @@ next_workspace = "alt+down"
 last_pane = "prefix+;"
 previous_agent = ["alt+k", "alt+i"]
 next_agent = ["alt+j", "alt+e"]
+new_worktree = "prefix+shift+t"
 open_worktree = "prefix+t"
 close_workspace = "prefix+shift+d"
 resize_mode = "prefix+shift+r"
@@ -62,14 +66,6 @@ key = "prefix+d"
 type = "shell"
 command = "sh ~/.config/herdr/neo4j-cloud-tab.sh"
 description = "new tab for neo4j-cloud"
-
-[[keys.command]]
-key = "prefix+shift+t"
-type = "popup"
-command = "sh ~/.config/herdr/new-worktree.sh"
-description = "new neo4j-cloud worktree workspace"
-width = "60%"
-height = "25%"
 
 [[keys.command]]
 key = "prefix+g"
