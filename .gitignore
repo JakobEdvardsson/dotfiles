@@ -4,5 +4,8 @@
 .config/herdr/*.log
 .config/herdr/session.json
 .config/herdr/.plugins.lock
-.config/omarchy/shell.json.bak.*
 .nvimlog
+
+# Backup files (timestamped .bak copies made before editing configs)
+*.bak
+*.bak.*
