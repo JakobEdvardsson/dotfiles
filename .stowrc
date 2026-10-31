@@ -1,4 +1,0 @@
---ignore='^\.git$'
---ignore='^README.md'
---ignore='^.stowrc'
---ignore='^notes.md'

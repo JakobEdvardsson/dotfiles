@@ -1,8 +1,0 @@
-shell-integration = fish
-font-family = JetBrains Mono
-mouse-hide-while-typing = true
-scrollback-limit = 1000000
-window-save-state = always
-theme = iTerm2 Solarized Light
-mouse-scroll-multiplier = 1.0
-bell-audio-volume = 0
