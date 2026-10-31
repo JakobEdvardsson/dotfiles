@@ -44,6 +44,9 @@ hl.config({
   },
 })
 
+-- Slightly increase touchpad pointer speed without changing mouse speed.
+hl.device({ name = "snsl002d:00-2c2f:002d-touchpad", sensitivity = 0.15 })
+
 -- App-specific touchpad scroll speeds.
 -- o.window("(Alacritty|kitty|foot)", { scroll_touchpad = 1.5 })
 -- o.window("com.mitchellh.ghostty", { scroll_touchpad = 0.2 })
