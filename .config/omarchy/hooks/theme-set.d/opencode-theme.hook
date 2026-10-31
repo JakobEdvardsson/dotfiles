@@ -1,0 +1,6 @@
+#!/bin/bash
+# Keep OpenCode's generated theme in sync with the active Omarchy palette.
+
+set -e
+
+"$HOME/.local/bin/omarchy-opencode-theme"

@@ -1,3 +1,7 @@
 {
-  "plugins": ["./herdr-opencode"]
+  "theme": {
+    "name": "omarchy",
+    "mode": "system"
+  },
+  "plugins": ["./herdr-opencode", "./omarchy-theme"]
 }
