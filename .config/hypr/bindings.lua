@@ -26,6 +26,10 @@
 -- Close the focused application with Super+Q.
 o.bind("SUPER + Q", "Close window", hl.dsp.window.close())
 
+-- Open the default browser with Super+W instead of closing the focused window.
+hl.unbind("SUPER + W")
+o.bind("SUPER + W", "Browser", { omarchy = "browser" })
+
 -- Logitech MX Keys examples:
 -- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")
 -- o.bind("SUPER + H", nil, "voxtype record toggle")
