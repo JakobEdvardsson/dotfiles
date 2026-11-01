@@ -12,5 +12,7 @@ source "$OMARCHY_PATH/default/bash/rc"
 #
 # Make an alias for invoking commands you use constantly
 # alias p='python'
+rm() { trash-put "$@"; }
+alias tp='trash-put'
 
 . "$HOME/.local/share/../bin/env"
