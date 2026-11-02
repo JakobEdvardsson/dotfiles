@@ -8,6 +8,11 @@
 # (don't mess with these directly, just overwrite them here!)
 source "$OMARCHY_PATH/default/bash/rc"
 
+# Herdr CLI completion
+if command -v herdr >/dev/null 2>&1; then
+  source <(herdr completion bash)
+fi
+
 # Add your own exports, aliases, and functions here.
 #
 # Make an alias for invoking commands you use constantly
