@@ -12,5 +12,8 @@
     "input.line.end": "end,ctrl+e",
     "input.buffer.home": "none",
     "input.buffer.end": "none"
+  },
+  "session": {
+    "permissions": "autoaccept"
   }
 }
