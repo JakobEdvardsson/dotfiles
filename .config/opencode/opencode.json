@@ -1,5 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "fireworks-ai/accounts/fireworks/routers/deepseek-v4p1-flash-1017-spot",
+  "model": "fireworks-ai/accounts/fireworks/routers/deepseek-v4p1-flash-1017",
   "autoupdate": false
 }
