@@ -55,7 +55,7 @@ rename_tab = "prefix+r"
 close_tab = "prefix+k"
 switch_tab = ["prefix+1..9", "alt+1..9"]
 previous_tab = ["prefix+p", "alt+left"]
-next_tab = ["prefix+n", "alt+right"]
+next_tab = "alt+right"
 
 # Like swap-window -t -1/+1 on M-S-Left/Right
 move_tab_previous = "alt+shift+left"
@@ -94,3 +94,15 @@ tab_bar_right = [{ type = "zoom" }, { type = "hostname" }]
 # the basename of the pane cwd. This is what Hyprland shows in the group bar,
 # and it resolves on the server so remote sessions name the remote host.
 window_title = "{hostname}: {workspace}"
+
+[[keys.command]]
+key = "prefix+o"
+type = "shell"
+command = "sh ~/.config/herdr/opencode-tab.sh"
+description = "new tab running opencode"
+
+[[keys.command]]
+key = "prefix+n"
+type = "shell"
+command = "sh ~/.config/herdr/nvim-tab.sh"
+description = "new tab running nvim"
