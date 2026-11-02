@@ -4,6 +4,7 @@ gh = "latest"
 go = "latest"
 node = "latest"
 opencode = { version = "latest", allow_builds = ["@opencode/cli"] }
+pnpm = "latest"
 python = "latest"
 
 [settings.upgrade]
