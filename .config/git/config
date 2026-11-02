@@ -29,3 +29,5 @@
 [user]
 	name = Jakob Edvardsson
 	email = jakob@edvardsson.tech
+[url "git@github.com:neo-technology/neo4j-cloud"]
+	insteadOf = https://github.com/neo-technology/neo4j-cloud
