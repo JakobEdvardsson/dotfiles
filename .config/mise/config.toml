@@ -2,7 +2,7 @@
 codex = "latest"
 gh = "latest"
 go = "latest"
-node = "26.12.0"
+node = "latest"
 opencode = { version = "latest", allow_builds = ["@opencode/cli"] }
 python = "latest"
 
