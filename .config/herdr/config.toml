@@ -20,6 +20,7 @@ prefix = "ctrl+t"
 
 # Config and help
 reload_config = "prefix+q"
+open_notification_target = "" # prefix+o is used for the OpenCode tab command below
 help = "prefix+?"
 detach = "prefix+d"
 
