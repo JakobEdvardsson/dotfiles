@@ -26,6 +26,11 @@
 -- Close the focused application with Super+Q.
 o.bind("SUPER + Q", "Close window", hl.dsp.window.close())
 
+-- Lock with Super+L; move the workspace layout toggle to Super+Shift+L.
+hl.unbind("SUPER + L")
+o.bind("SUPER + L", "Lock system", "omarchy-system-lock")
+o.bind("SUPER + SHIFT + L", "Toggle workspace layout", "omarchy-hyprland-workspace-layout-toggle")
+
 -- Open the default browser with Super+W instead of closing the focused window.
 hl.unbind("SUPER + W")
 o.bind("SUPER + W", "Browser", { omarchy = "browser" })
