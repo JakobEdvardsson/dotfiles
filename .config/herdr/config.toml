@@ -82,8 +82,10 @@ pane_scrollbars = false
 # kill-window and kill-session never asked
 confirm_close = false
 
-# automatic-rename gave windows a name without prompting
-prompt_new_tab_name = false
+# Ask for a name when creating a tab; tmux's automatic-rename named windows
+# without prompting. Scripted tabs still pass --label, so this only affects
+# prefix+c.
+prompt_new_tab_name = true
 
 # set -g mouse on
 mouse_capture = true
