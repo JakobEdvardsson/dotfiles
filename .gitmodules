@@ -1,0 +1,12 @@
+[submodule ".config/omarchy/plugins/crmne.hyprmoncfg"]
+	path = .config/omarchy/plugins/crmne.hyprmoncfg
+	url = https://github.com/crmne/omarchy-hyprmoncfg.git
+[submodule ".config/omarchy/plugins/io.github.twiking.omacontrol"]
+	path = .config/omarchy/plugins/io.github.twiking.omacontrol
+	url = https://github.com/twiking/omacontrol.git
+[submodule ".config/omarchy/plugins/jankeesvw.notification-center"]
+	path = .config/omarchy/plugins/jankeesvw.notification-center
+	url = https://github.com/jankeesvw/omarchy-notification-center.git
+[submodule ".config/omarchy/plugins/omaplug"]
+	path = .config/omarchy/plugins/omaplug
+	url = https://github.com/fross100/omaplug.git
