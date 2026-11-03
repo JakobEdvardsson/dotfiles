@@ -27,3 +27,8 @@ require("default.hypr.toggles")
 
 -- Add any other personal Hyprland configuration below.
 -- o.window("qemu", { workspace = "5" })
+
+-- Omarchy gives every window a slightly transparent default (0.985 active,
+-- 0.96 inactive). Keep the active window fully opaque and inactive at
+-- Omarchy's 96%.
+o.window({ tag = "default-opacity" }, { opacity = "0.995 0.96" })
