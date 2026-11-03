@@ -31,3 +31,9 @@
 	email = jakob@edvardsson.tech
 [url "git@github.com:neo-technology/neo4j-cloud"]
 	insteadOf = https://github.com/neo-technology/neo4j-cloud
+[credential "https://github.com"]
+	helper = 
+	helper = !/home/jakobe/.local/share/mise/installs/gh/2.103.3/gh_2.103.3_linux_amd64/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/home/jakobe/.local/share/mise/installs/gh/2.103.3/gh_2.103.3_linux_amd64/bin/gh auth git-credential
