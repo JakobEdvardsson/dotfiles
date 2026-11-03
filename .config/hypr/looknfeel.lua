@@ -48,3 +48,12 @@
 --     column_width = 0.97,
 --   },
 -- })
+
+-- Leave the pointer where it is when switching workspaces. Omarchy defaults
+-- cursor:warp_on_change_workspace to 1, which moves it to the last focused
+-- window on every change.
+hl.config({
+  cursor = {
+    warp_on_change_workspace = 0,
+  },
+})
