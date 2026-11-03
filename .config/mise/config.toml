@@ -5,6 +5,7 @@ codex = "latest"
 gcloud = "latest"
 gh = "latest"
 go = "latest"
+kubectl = "latest"
 node = "latest"
 opencode = { version = "latest", allow_builds = ["@opencode/cli"] }
 pnpm = "latest"
