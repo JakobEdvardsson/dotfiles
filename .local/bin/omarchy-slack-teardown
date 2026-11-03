@@ -1,0 +1,25 @@
+#!/bin/bash
+# Remove the local Slack theme integration.
+#
+# This undoes omarchy-slack-setup: it restores the packaged Slack launcher and
+# removes the launcher state. Locally generated configs are left in the
+# dotfiles checkout.
+
+set -euo pipefail
+
+launcher="$HOME/.local/bin/omarchy-launch-slack"
+override="$HOME/.local/share/applications/slack.desktop"
+state="$HOME/.local/state/omarchy/slack"
+
+if [[ -f $override ]] && grep -qE "^Exec=$launcher( |$)" "$override"; then
+  if [[ -f $override.before-omarchy ]]; then
+    mv "$override.before-omarchy" "$override"
+  else
+    rm -f "$override"
+  fi
+  update-desktop-database "${override%/*}" 2>/dev/null || true
+fi
+
+rm -rf "$state"
+
+echo "Slack theme sync removed. Restart Slack to return to its stock launcher."

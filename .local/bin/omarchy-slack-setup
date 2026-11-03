@@ -1,0 +1,65 @@
+#!/bin/bash
+# Enable native Slack theming through a user desktop-entry override.
+#
+# Local backport of omarchy#17113 (omarchy-setup-slack) for the stable 4.0.6
+# package. Undo with omarchy-slack-teardown once the packaged omarchy ships
+# Slack theming.
+
+set -euo pipefail
+
+launcher="$HOME/.local/bin/omarchy-launch-slack"
+override="$HOME/.local/share/applications/slack.desktop"
+state="$HOME/.local/state/omarchy/slack"
+theme_json="$HOME/.local/state/omarchy/current/theme/slack.json"
+
+if (( EUID == 0 )); then
+  echo "Run this command as your desktop user, without sudo." >&2
+  exit 1
+fi
+
+[[ -f /usr/bin/slack ]] || { echo "Install Slack Desktop first." >&2; exit 1; }
+[[ -x $launcher ]] || { echo "Missing launcher: $launcher" >&2; exit 1; }
+
+# The generated theme is normally written by omarchy-theme-set. Fill it in for
+# the theme that is already active so setup does not have to re-apply the whole
+# desktop theme (which would restart running apps).
+if [[ ! -f $theme_json ]]; then
+  colors="$HOME/.local/state/omarchy/current/theme/colors.toml"
+  template="$HOME/.config/omarchy/themed/slack.json.tpl"
+  if [[ -f $colors && -f $template ]]; then
+    scratch=$(mktemp -d)
+    mkdir -p "$scratch/.config/omarchy/themed" "$scratch/.local/state/omarchy/current/next-theme"
+    cp "$template" "$scratch/.config/omarchy/themed/"
+    cp "$colors" "$scratch/.local/state/omarchy/current/next-theme/colors.toml"
+    OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}" HOME="$scratch" omarchy-theme-set-templates >/dev/null 2>&1 || true
+    if [[ -f $scratch/.local/state/omarchy/current/next-theme/slack.json ]]; then
+      cp "$scratch/.local/state/omarchy/current/next-theme/slack.json" "$theme_json"
+    fi
+    rm -rf "$scratch"
+  fi
+fi
+
+desktop="/usr/share/applications/slack.desktop"
+if ! grep -qE '^Exec=(/usr/bin/)?slack( |$)' "$desktop"; then
+  echo "Slack's desktop launcher has changed; refusing to replace it." >&2
+  exit 1
+fi
+
+mkdir -p "${override%/*}" "$state"
+if [[ -f $override ]] && ! grep -qE "^Exec=$launcher( |$)" "$override"; then
+  if [[ -e $override.before-omarchy ]]; then
+    echo "An earlier launcher backup already exists: $override.before-omarchy" >&2
+    exit 1
+  fi
+  cp -a "$override" "$override.before-omarchy"
+fi
+pending=$(mktemp "$override.XXXXXX")
+trap 'rm -f "$pending"' EXIT
+sed -E 's#^Exec=(/usr/bin/)?slack( |$)#Exec='"$launcher"'\2#' "$desktop" >"$pending"
+mv "$pending" "$override"
+touch "$state/enabled"
+update-desktop-database "${override%/*}"
+"$HOME/.local/bin/omarchy-slack-theme"
+
+echo "Slack theme sync enabled. Fully quit Slack and reopen it from the launcher once."
+echo "Future Omarchy theme changes will recolor open Slack windows automatically."

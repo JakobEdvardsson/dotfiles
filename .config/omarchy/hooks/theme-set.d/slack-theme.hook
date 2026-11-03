@@ -1,0 +1,12 @@
+#!/bin/bash
+# Publish the new Omarchy theme to Slack after every theme change.
+#
+# Local backport of omarchy#17113; remove when packaged Omarchy ships Slack
+# theming.
+
+set -e
+
+script="$HOME/.local/bin/omarchy-slack-theme"
+[[ -x $script ]] || exit 0
+
+"$script"

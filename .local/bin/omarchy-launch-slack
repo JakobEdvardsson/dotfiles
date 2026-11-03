@@ -1,0 +1,19 @@
+#!/bin/bash
+# Launch Slack through the local theme launcher when Slack theming is enabled.
+#
+# Local backport of omarchy#17113. Delete this file and the omarchy-slack-*
+# helpers once the packaged omarchy provides Slack theming.
+
+arguments=()
+for argument in "$@"; do
+  [[ $argument == "--remote-debugging-pipe" ]] || arguments+=("$argument")
+done
+
+state="$HOME/.local/state/omarchy/slack"
+launcher="$HOME/.config/omarchy/slack/launcher.py"
+
+if [[ -f $state/enabled && -f $launcher ]]; then
+  exec /usr/bin/python "$launcher" "${arguments[@]}"
+else
+  exec /usr/bin/slack "${arguments[@]}"
+fi
