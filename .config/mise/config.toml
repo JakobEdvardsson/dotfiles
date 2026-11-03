@@ -1,5 +1,8 @@
 [tools]
+aws-cli = { version = "latest", symlink_bins = "true" }
+azure-cli = { version = "latest", dependency_prereleases = "allow", with = ["pip"] }
 codex = "latest"
+gcloud = "latest"
 gh = "latest"
 go = "latest"
 node = "latest"
