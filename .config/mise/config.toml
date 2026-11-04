@@ -5,11 +5,14 @@ codex = "latest"
 gcloud = "latest"
 gh = "latest"
 go = "latest"
+go-jsonnet = "0.20.0"
+jb = "0.6.0" # jsonnet-bundler; matches neo4j-cloud's pinned version
 kubectl = "latest"
+kustomize = "latest"
 node = "latest"
 opencode = { version = "latest", allow_builds = ["@opencode/cli"] }
 pnpm = "latest"
-python = "latest"
+python = ["latest", "3.10"]
 
 [settings.upgrade]
 auto_prune = false
