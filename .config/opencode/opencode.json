@@ -3,6 +3,8 @@
   "model": "fireworks-ai/accounts/fireworks/routers/deepseek-v4p1-flash-1017",
   "autoupdate": false,
   "permissions": [
+    { "action": "shell", "resource": "git * push *http://*", "effect": "deny" },
+    { "action": "shell", "resource": "git * push *https://*", "effect": "deny" },
     { "action": "shell", "resource": "git push *", "effect": "ask" },
     { "action": "shell", "resource": "git * push *", "effect": "ask" },
     { "action": "shell", "resource": "gh *", "effect": "ask" },
