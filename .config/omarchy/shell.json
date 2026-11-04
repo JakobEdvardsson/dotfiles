@@ -41,9 +41,6 @@
           "id": "crmne.hyprmoncfg"
         },
         {
-          "id": "jankeesvw.notification-center"
-        },
-        {
           "id": "io.github.twiking.omacontrol"
         },
         {
@@ -66,6 +63,9 @@
         },
         {
           "id": "omarchy.power"
+        },
+        {
+          "id": "jankeesvw.notification-center"
         }
       ]
     },
