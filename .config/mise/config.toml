@@ -2,7 +2,7 @@
 aws-cli = { version = "latest", symlink_bins = "true" }
 azure-cli = { version = "latest", dependency_prereleases = "allow", with = ["pip"] }
 codex = "latest"
-gcloud = "latest"
+gcloud = { version = "latest", postinstall = "gcloud components install gke-gcloud-auth-plugin --quiet" }
 gh = "latest"
 go = "latest"
 go-jsonnet = "0.20.0"
