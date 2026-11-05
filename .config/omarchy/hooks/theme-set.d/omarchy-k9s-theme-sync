@@ -1,2 +1,2 @@
 #!/bin/bash
-exec "/home/jakobe/.local/share/omarchy-k9s-theme-sync/omarchy-k9s-theme-sync" "$@"
+exec "$HOME/.local/bin/omarchy-k9s-theme-sync" "$@"

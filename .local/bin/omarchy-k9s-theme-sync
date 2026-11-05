@@ -1,0 +1,21 @@
+#!/bin/bash
+# Copy the active Omarchy theme's k9s skin into k9s and let k9s reactive mode
+# reload it. Vendored from fchtngr/omarchy-k9s-theme-sync; the plugin's service
+# re-ran its installer (and notified) on every shell start.
+
+set -euo pipefail
+
+config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
+state_home=${XDG_STATE_HOME:-"$HOME/.local/state"}
+k9s_config_dir=${K9S_CONFIG_DIR:-"$config_home/k9s"}
+source_skin="$state_home/omarchy/current/theme/k9s.yaml"
+target_skin="$k9s_config_dir/skins/omarchy.yaml"
+
+[[ -f $source_skin ]] || exit 0
+
+install -d "$(dirname -- "$target_skin")"
+temporary=$(mktemp "${target_skin}.tmp.XXXXXX")
+trap 'rm -f -- "$temporary"' EXIT
+cp -- "$source_skin" "$temporary"
+mv -- "$temporary" "$target_skin"
+trap - EXIT

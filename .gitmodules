@@ -10,6 +10,3 @@
 [submodule ".config/omarchy/plugins/omaplug"]
 	path = .config/omarchy/plugins/omaplug
 	url = https://github.com/fross100/omaplug.git
-[submodule ".config/omarchy/plugins/fchtngr.k9s-theme-sync"]
-	path = .config/omarchy/plugins/fchtngr.k9s-theme-sync
-	url = https://github.com/fchtngr/omarchy-k9s-theme-sync.git

@@ -76,10 +76,6 @@
     "lock": 600,
     "screensaver": 300
   },
-  "plugins": [
-    {
-      "id": "fchtngr.k9s-theme-sync"
-    }
-  ],
+  "plugins": [],
   "version": 1
 }
