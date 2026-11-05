@@ -27,11 +27,12 @@
 hl.unbind("SUPER + W")
 o.bind("SUPER + W", "Browser", { omarchy = "browser" })
 
--- Dictation push-to-talk on Left Alt + the AltGr key. wev reports AltGr as
--- keycode 108 (ISO_Level3_Shift), and Left Alt is the Mod1 modifier.
+-- Dictation push-to-talk on Super + AltGr. Left Alt is avoided because Slack
+-- treats a lone Alt as menu activation and drops composer focus. wev reports
+-- AltGr as keycode 108 (ISO_Level3_Shift).
 hl.unbind("ALT + Alt_R")
 o.bind_hold(
-  "ALT + code:108",
+  "SUPER + code:108",
   "Start dictation (push-to-talk)",
   "omarchy-dictation start",
   "Stop dictation (push-to-talk)",
