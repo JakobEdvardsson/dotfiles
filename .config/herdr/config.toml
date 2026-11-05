@@ -109,3 +109,6 @@ key = "prefix+n"
 type = "shell"
 command = "sh ~/.config/herdr/nvim-tab.sh"
 description = "new tab running nvim"
+
+[ui.toast]
+delivery = "herdr"
