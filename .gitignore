@@ -9,3 +9,6 @@
 # Backup files (timestamped .bak copies made before editing configs)
 *.bak
 *.bak.*
+
+# OmaControl runtime state (read news, cached monitor settings)
+.config/omarchy/omacontrol.json
