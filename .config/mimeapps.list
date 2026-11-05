@@ -7,6 +7,7 @@ x-scheme-handler/unknown=brave-origin.desktop
 x-scheme-handler/mailto=HEY.desktop
 x-scheme-handler/slack=slack.desktop
 x-scheme-handler/bruno=bruno.desktop
+x-scheme-handler/superwhisper=superwhisper-url.desktop
 
 [Added Associations]
 x-scheme-handler/slack=slack.desktop;

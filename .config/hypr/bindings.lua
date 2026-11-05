@@ -23,17 +23,16 @@
 -- Disable a default binding without replacing it.
 -- hl.unbind("SUPER + SHIFT + B")
 
--- Close the focused application with Super+Q.
-o.bind("SUPER + Q", "Close window", hl.dsp.window.close())
-
--- Lock with Super+L; move the workspace layout toggle to Super+Shift+L.
-hl.unbind("SUPER + L")
-o.bind("SUPER + L", "Lock system", "omarchy-system-lock")
-o.bind("SUPER + SHIFT + L", "Toggle workspace layout", "omarchy-hyprland-workspace-layout-toggle")
-
--- Open the default browser with Super+W instead of closing the focused window.
-hl.unbind("SUPER + W")
-o.bind("SUPER + W", "Browser", { omarchy = "browser" })
+-- Dictation push-to-talk on Left Alt + the AltGr key. wev reports AltGr as
+-- keycode 108 (ISO_Level3_Shift), and Left Alt is the Mod1 modifier.
+hl.unbind("ALT + Alt_R")
+o.bind_hold(
+  "ALT + code:108",
+  "Start dictation (push-to-talk)",
+  "omarchy-dictation start",
+  "Stop dictation (push-to-talk)",
+  "omarchy-dictation stop"
+)
 
 -- Logitech MX Keys examples:
 -- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")

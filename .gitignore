@@ -12,3 +12,6 @@
 
 # OmaControl runtime state (read news, cached monitor settings)
 .config/omarchy/omacontrol.json
+
+# Runtime locks (dictation backend selection)
+.config/omarchy/defaults/dictation.lock

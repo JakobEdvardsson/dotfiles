@@ -1,19 +1,36 @@
 {
   "bar": {
-    "centerAnchor": "omarchy.clock",
+    "background": "opaque",
     "layout": {
       "center": [
-        {
-          "id": "omarchy.indicators"
-        },
         {
           "format": "dddd HH:mm",
           "formatAlt": "d MMMM 'W'ww yyyy",
           "id": "omarchy.clock",
           "verticalFormat": "HH\n—\nmm"
-        },
+        }
+      ],
+      "centerBegin": [
         {
-          "id": "omarchy.keyboard-layout"
+          "id": "omarchy.indicators"
+        }
+      ],
+      "centerEnd": [
+        {
+          "cities": [
+            {
+              "lat": 55.60587,
+              "lon": 13.00073,
+              "name": "Malmö",
+              "region": "Skåne County, SE",
+              "zone": "Europe/Stockholm"
+            },
+            {
+              "name": "UTC",
+              "zone": "Etc/UTC"
+            }
+          ],
+          "id": "omarchy.elsewhen"
         },
         {
           "id": "omarchy.weather"
@@ -33,6 +50,9 @@
       "right": [
         {
           "id": "omarchy.tray"
+        },
+        {
+          "id": "omarchy.keyboard-layout"
         },
         {
           "id": "omaplug"
@@ -67,10 +87,14 @@
         {
           "id": "jankeesvw.notification-center"
         }
+      ],
+      "tray": [
+        {
+          "id": "superwhisper.panel"
+        }
       ]
     },
-    "position": "top",
-    "transparent": true
+    "position": "top"
   },
   "idle": {
     "lock": 600,
