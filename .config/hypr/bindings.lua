@@ -27,6 +27,14 @@
 hl.unbind("SUPER + W")
 o.bind("SUPER + W", "Browser", { omarchy = "browser" })
 
+-- Quake console on Super+Shift+T; Activity moves to Super+Alt+T. The grave
+-- bindings are released because the keyboard has no grave key.
+hl.unbind("SUPER + SHIFT + T")
+hl.unbind("SUPER + grave")
+hl.unbind("SUPER + SHIFT + grave")
+o.bind("SUPER + SHIFT + T", "Toggle Quake console", hl.dsp.workspace.toggle_special("qconsole"))
+o.bind("SUPER + ALT + T", "Activity", { tui = "btop" })
+
 -- Dictation push-to-talk on Super + AltGr. Left Alt is avoided because Slack
 -- treats a lone Alt as menu activation and drops composer focus. wev reports
 -- AltGr as keycode 108 (ISO_Level3_Shift).
