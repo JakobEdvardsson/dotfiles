@@ -23,6 +23,10 @@
 -- Disable a default binding without replacing it.
 -- hl.unbind("SUPER + SHIFT + B")
 
+-- Open the default browser with Super+W instead of closing the focused window.
+hl.unbind("SUPER + W")
+o.bind("SUPER + W", "Browser", { omarchy = "browser" })
+
 -- Dictation push-to-talk on Left Alt + the AltGr key. wev reports AltGr as
 -- keycode 108 (ISO_Level3_Shift), and Left Alt is the Mod1 modifier.
 hl.unbind("ALT + Alt_R")
