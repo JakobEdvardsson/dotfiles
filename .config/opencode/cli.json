@@ -1,9 +1,10 @@
 {
   "$schema": "https://opencode.ai/v2/cli.json",
   "theme": {
-    "name": "system"
+    "name": "omarchy",
+    "mode": "system"
   },
-  "plugins": ["./herdr-opencode"],
+  "plugins": ["./herdr-opencode", "./omarchy-theme"],
   "keybinds": {
     "session.first": "ctrl+g,alt+home",
     "session.last": "ctrl+alt+g",

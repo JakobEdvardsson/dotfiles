@@ -1,0 +1,10 @@
+#!/bin/bash
+# Keep OpenCode's generated theme in sync with the active Omarchy palette.
+
+set -e
+
+"$HOME/.local/bin/omarchy-opencode-theme"
+
+# Omarchy's omarchy-restart-opencode matches "opencode", but OpenCode 2 runs as
+# "opencode.exe". Signal only TUI sessions, never the shared server.
+pgrep -f 'opencode\.exe --session' | xargs -r kill -USR2 2>/dev/null || true
