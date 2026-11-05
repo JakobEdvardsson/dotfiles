@@ -1,0 +1,7 @@
+-- Machine: think (mini-PC).
+--
+-- Loaded by hyprland.lua by matching `hostname`, after the shared config. Put
+-- anything that only applies to this machine here.
+--
+-- hyprmoncfg is not installed here, so the display layout comes from
+-- monitors.default.lua plus this machine's own (untracked) monitors.lua.

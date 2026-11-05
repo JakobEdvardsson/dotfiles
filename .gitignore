@@ -15,3 +15,9 @@
 
 # Runtime locks (dictation backend selection)
 .config/omarchy/defaults/dictation.lock
+
+# Per-machine display state. hyprmoncfg rewrites monitors.lua and generates
+# hyprmoncfg-monitors.lua; each host owns its own copy, so neither is tracked.
+# Shared monitor defaults live in monitors.default.lua instead.
+.config/hypr/monitors.lua
+.config/hypr/hyprmoncfg-monitors.lua

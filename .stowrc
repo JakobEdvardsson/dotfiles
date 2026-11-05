@@ -3,3 +3,6 @@
 --ignore='^\.stowrc$'
 --ignore='^notes\.md$'
 --ignore='^\.gitignore$'
+--ignore='\.bak(\.\d+)?$'
+--ignore='^\.config/hypr/monitors\.lua$'
+--ignore='^\.config/hypr/hyprmoncfg-monitors\.lua$'
